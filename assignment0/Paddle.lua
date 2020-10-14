@@ -60,3 +60,19 @@ end
 function Paddle:render()
     love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
 end
+
+function Paddle:aboveball(ball)
+    if ball.y < self.y + 10 then
+        return true
+    else
+        return false
+    end
+end
+
+function Paddle:belowball()
+    if ball.y > self.y +10 then
+        return true
+    else
+        return false
+    end
+end
