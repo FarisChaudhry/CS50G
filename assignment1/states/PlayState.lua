@@ -107,6 +107,7 @@ function PlayState:update(dt)
     if love.keyboard.wasPressed('q') then
         if scrolling then
             scrolling = false
+            sounds['pause']:play()
             sounds['music']:pause()
         else
             scrolling = true
