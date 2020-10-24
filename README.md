@@ -7,7 +7,7 @@
   - [x] AI Update
 
 - Assignment 1 - Flappy Bird
-  - [ ] Pause
+  - [x] Pause
   - [x] Medal
   - [x] Procedural Gap Height
   - [x] Procedural Pipe Spacing

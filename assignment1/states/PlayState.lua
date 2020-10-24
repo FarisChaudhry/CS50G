@@ -29,7 +29,7 @@ function PlayState:init()
 end
 
 function PlayState:update(dt)
-    if scrolling == true then
+    if scrolling then
         -- update timer for pipe spawning
         self.timer = self.timer + dt
 
@@ -105,10 +105,12 @@ function PlayState:update(dt)
     end
 
     if love.keyboard.wasPressed('q') then
-        if scrolling == true then
+        if scrolling then
             scrolling = false
+            sounds['music']:pause()
         else
             scrolling = true
+            sounds['music']:play()
         end
     end
 end
@@ -122,6 +124,13 @@ function PlayState:render()
     love.graphics.print('Score: ' .. tostring(self.score), 8, 8)
 
     self.bird:render()
+
+    if not scrolling then
+        love.graphics.setFont(mediumFont)
+        love.graphics.printf('Game Paused', 0, VIRTUAL_HEIGHT / 2, VIRTUAL_WIDTH, 'center')
+        love.graphics.setFont(smallFont)
+        love.graphics.printf('press \'q\' to unpause', 0, VIRTUAL_HEIGHT / 2 + 20, VIRTUAL_WIDTH, 'center')
+    end
 end
 
 --[[
