@@ -8,5 +8,7 @@
 
 - Assignment 1 - Flappy Bird
   - [ ] Pause
-  - [ ] Medal
-  - [ ] Pipe Generation
+  - [x] Medal
+  - [x] Procedural Gap Height
+  - [x] Procedural Pipe Spacing
+  - [x] Skybox Collision

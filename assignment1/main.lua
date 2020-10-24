@@ -65,7 +65,7 @@ local BACKGROUND_LOOPING_POINT = 413
 function love.load()
     -- initialize our nearest-neighbor filter
     love.graphics.setDefaultFilter('nearest', 'nearest')
-    
+
     -- seed the RNG
     math.randomseed(os.time())
 
@@ -86,7 +86,7 @@ function love.load()
         ['hurt'] = love.audio.newSource('hurt.wav', 'static'),
         ['score'] = love.audio.newSource('score.wav', 'static'),
 
-        -- https://freesound.org/people/xsgianni/sounds/388079/
+        -- https://freesound.org/people/xsgianni/388079/
         ['music'] = love.audio.newSource('marios_way.mp3', 'static')
     }
 
@@ -97,7 +97,7 @@ function love.load()
     -- initialize our virtual resolution
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         vsync = true,
-        fullscreen = false,
+        fullscreen = true,
         resizable = true
     })
 
@@ -166,10 +166,10 @@ end
 
 function love.draw()
     push:start()
-    
+
     love.graphics.draw(background, -backgroundScroll, 0)
     gStateMachine:render()
     love.graphics.draw(ground, -groundScroll, VIRTUAL_HEIGHT - 16)
-    
+
     push:finish()
 end

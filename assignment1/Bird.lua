@@ -10,7 +10,7 @@
 
 Bird = Class{}
 
-local GRAVITY = 20
+local GRAVITY = 10
 
 function Bird:init()
     self.image = love.graphics.newImage('bird.png')
@@ -44,9 +44,12 @@ end
 function Bird:update(dt)
     self.dy = self.dy + GRAVITY * dt
 
+    --prevent bird from flying over screen
+    self.y = math.max(self.y, 0)
+
     -- burst of anti-gravity when space or left mouse are pressed
     if love.keyboard.wasPressed('space') or love.mouse.wasPressed(1) then
-        self.dy = -5
+        self.dy = -2
         sounds['jump']:play()
     end
 
