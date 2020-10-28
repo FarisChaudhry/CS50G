@@ -14,5 +14,5 @@
 
 - Assignment 2 - Breakout (IN PROGRESS)
   - [ ] Powerups
-  - [ ] Resize Paddle
+  - [x] Resize Paddle
   - [ ] Brick Key Mechanic

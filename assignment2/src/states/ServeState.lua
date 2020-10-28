@@ -24,11 +24,13 @@ function ServeState:enter(params)
     self.score = params.score
     self.highScores = params.highScores
     self.level = params.level
+    self.increaseSizePoints = params.increaseSizePoints
+    self.increaseSize = params.increaseSize
     self.recoverPoints = params.recoverPoints
+    self.bricksHit = params.bricksHit
 
     -- init new ball (random color for fun)
     self.ball = Ball()
-    self.ball.skin = math.random(7)
 end
 
 function ServeState:update(dt)
@@ -47,7 +49,10 @@ function ServeState:update(dt)
             highScores = self.highScores,
             ball = self.ball,
             level = self.level,
-            recoverPoints = self.recoverPoints
+            increaseSizePoints = self.increaseSizePoints,
+            increaseSize = self.increaseSize,
+            recoverPoints = self.recoverPoints,
+            bricksHit = self.bricksHit
         })
     end
 

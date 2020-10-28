@@ -21,6 +21,8 @@ function VictoryState:enter(params)
     self.health = params.health
     self.ball = params.ball
     self.recoverPoints = params.recoverPoints
+    self.increaseSizePoints = params.increaseSizePoints
+    self.increaseSize = params.increaseSize
 end
 
 function VictoryState:update(dt)
@@ -39,7 +41,10 @@ function VictoryState:update(dt)
             health = self.health,
             score = self.score,
             highScores = self.highScores,
-            recoverPoints = self.recoverPoints
+            recoverPoints = self.recoverPoints,
+            increaseSize = self.increaseSize,
+            increaseSizePoints = self.increaseSizePoints,
+            bricksHit = 0
         })
     end
 end

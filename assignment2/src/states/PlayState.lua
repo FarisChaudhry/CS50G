@@ -28,8 +28,10 @@ function PlayState:enter(params)
     self.highScores = params.highScores
     self.ball = params.ball
     self.level = params.level
-
-    self.recoverPoints = 5000
+    self.recoverPoints = params.recoverPoints
+    self.bricksHit = params.bricksHit
+    self.increaseSize = params.increaseSize
+    self.increaseSizePoints = params.increaseSizePoints
 
     -- give ball random starting velocity
     self.ball.dx = math.random(-200, 200)
@@ -87,6 +89,18 @@ function PlayState:update(dt)
             -- trigger the brick's hit function, which removes it from play
             brick:hit()
 
+            self.bricksHit = self.bricksHit + 1
+            if math.random(self.bricksHit, 100) == 100 then
+                self.bricksHit = 0
+            end
+ 
+            if self.score > self.increaseSizePoints then
+                self.paddle:bigger()
+                self.increaseSize = self.increaseSize + 1
+                self.increaseSizePoints = self.score + math.min(self.increaseSize * 1000, 50000)
+                gSounds['increasesize']:play()
+            end
+
             -- if we have enough points, recover a point of health
             if self.score > self.recoverPoints then
                 -- can't go above 3 health
@@ -106,11 +120,13 @@ function PlayState:update(dt)
                 gStateMachine:change('victory', {
                     level = self.level,
                     paddle = self.paddle,
-                    health = self.health,
                     score = self.score,
                     highScores = self.highScores,
                     ball = self.ball,
-                    recoverPoints = self.recoverPoints
+                    health = self.health,
+                    recoverPoints = self.recoverPoints,
+                    increaseSizePoints = self.increaseSizePoints,
+                    increaseSize = self.increaseSize,
                 })
             end
 
@@ -128,7 +144,7 @@ function PlayState:update(dt)
             if self.ball.x + 2 < brick.x and self.ball.dx > 0 then
                 
                 -- flip x velocity and reset position outside of brick
-                self.ball.dx = -self.ball.dx
+                self.ball.dx = -self.ball.dx 
                 self.ball.x = brick.x - 8
             
             -- right edge; only check if we're moving left, , and offset the check by a couple of pixels
@@ -169,6 +185,8 @@ function PlayState:update(dt)
         self.health = self.health - 1
         gSounds['hurt']:play()
 
+        self.paddle:smaller()
+
         if self.health == 0 then
             gStateMachine:change('game-over', {
                 score = self.score,
@@ -182,7 +200,10 @@ function PlayState:update(dt)
                 score = self.score,
                 highScores = self.highScores,
                 level = self.level,
-                recoverPoints = self.recoverPoints
+                recoverPoints = self.recoverPoints,
+                increaseSizePoints = self.increaseSizePoints,
+                increaseSize = self.increaseSize,
+                bricksHit = self.bricksHit
             })
         end
     end
@@ -219,6 +240,7 @@ function PlayState:render()
         love.graphics.setFont(gFonts['large'])
         love.graphics.printf("PAUSED", 0, VIRTUAL_HEIGHT / 2 - 16, VIRTUAL_WIDTH, 'center')
     end
+
 end
 
 function PlayState:checkVictory()
@@ -227,6 +249,5 @@ function PlayState:checkVictory()
             return false
         end 
     end
-
     return true
 end
