@@ -91,3 +91,11 @@ function Ball:render()
     love.graphics.draw(gTextures['main'], gFrames['balls'][self.skin],
         self.x, self.y)
 end
+
+function Ball:multiball(paddle)
+    self.x = paddle.x + (paddle.width / 2) - 4
+    self.y = paddle.y - 8
+
+    self.dx = math.random(-200, 200)
+    self.dy = math.random(-50, -60)
+end

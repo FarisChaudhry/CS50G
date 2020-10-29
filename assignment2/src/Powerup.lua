@@ -8,21 +8,28 @@ local types = {
 function Powerup:init(type)
     self.width = 8
     self.height = 8
+    self.x = math.random(12,VIRTUAL_WIDTH-20)
+    self.y = -15
 
-    self.dy = 0
-    self.dx = 0
+    self.dy = math.random(20,40)
+    self.dx = math.random(-50,50)
 
-    self.skin = types[type]
+    self.inPlay = true
+
+    self.type = types[type]
 end
 
 function Powerup:collides(paddle)
-    if self.x > target.x + target.width or target.x > self.x + self.width then
-        return false
+    if self.inPlay then
+        if self.x > paddle.x + paddle.width or paddle.x > self.x + self.width then
+            return false
+        end
+        if self.y > paddle.y + paddle.height or paddle.y > self.y + self.height then
+            return false
+        end
+        self.inPlay = false
+        return true
     end
-    if self.y > target.y + target.height or target.y > self.y + self.height then
-        return false
-    end
-    return true
 end
 
 function Powerup:update(dt)
@@ -40,15 +47,11 @@ function Powerup:update(dt)
         self.dx = -self.dx
         gSounds['wall-hit']:play()
     end
-
-    if self.y <= 0 then
-        self.y = 0
-        self.dy = -self.dy
-        gSounds['wall-hit']:play()
-    end
 end
     
 function Powerup:render()
-    love.graphics.draw(gTextures['main'], gFrames['powerups'][self.skin], 
-    self.x, self.y)
+    if self.inPlay == true then
+        love.graphics.draw(gTextures['main'], gFrames['powerups'][self.type], 
+        self.x, self.y)
+    end
 end
