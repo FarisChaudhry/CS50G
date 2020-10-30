@@ -32,11 +32,28 @@ function PlayState:enter(params)
     self.bricksHit = params.bricksHit
     self.increaseSize = params.increaseSize
     self.increaseSizePoints = params.increaseSizePoints
-    self.powerupChance = 100
+    self.keystate = params.keystate
+    
+    self.powerupChance = 50
+    
+    for k, brick in pairs(self.bricks) do
+        if brick.keybrick then
+            self.keyblock = true
+            break
+        else 
+            self.keyblock = false
+        end
+    end
+
+    if self.keyblock then
+        self.keyblockActivated = false
+    end
 
     -- give ball random starting velocity
     self.ball.dx = math.random(-200, 200)
     self.ball.dy = math.random(-50, -60)
+
+    self.powerups = {}
 
     self.balls = {}
     table.insert(self.balls,self.ball)
@@ -64,20 +81,25 @@ function PlayState:update(dt)
         ball:update(dt)
     end
 
-    if self.powerup ~= nil then 
-        self.powerup:update(dt) 
+    if #self.powerups > 0 then
+        for p, powerup in pairs(self.powerups) do 
+            
+            powerup:update(dt) 
+        
+            if powerup:collides(self.paddle) then
 
-        if self.powerup:collides(self.paddle) then
+                gSounds['powerup']:play()
 
-            gSounds['powerup']:play()
-
-            if self.powerup.type == 9 then
-                self.tempball1 = Ball()
-                self.tempball2 = Ball()
-                table.insert(self.balls, self.tempball1)
-                table.insert(self.balls, self.tempball2)
-                self.tempball1:multiball(self.paddle)
-                self.tempball2:multiball(self.paddle)
+                if powerup.type == 9 then
+                    self.tempball1 = Ball()
+                    self.tempball2 = Ball()
+                    table.insert(self.balls, self.tempball1)
+                    table.insert(self.balls, self.tempball2)
+                    self.tempball1:multiball(self.paddle)
+                    self.tempball2:multiball(self.paddle)
+                elseif powerup.type == 10 then
+                    self.keystate = true
+                end
             end
         end
     end
@@ -113,15 +135,36 @@ function PlayState:update(dt)
             -- only check collision if we're in play
             if brick.inPlay and ball:collides(brick) then
 
-                -- add to score
-                self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                if not brick.keybrick then                   
+                    -- add to score
+                    self.score = self.score + (brick.tier * 200 + brick.color * 25)
 
-                -- trigger the brick's hit function, which removes it from play
-                brick:hit()
+                    -- trigger the brick's hit function, which removes it from play                    
+                    brick:hit()
+                else        
+                    brick:keybrickHit(self.keystate)
+                    if not brick.keyblockActivated and self.keystate then
+                        self.score = self.score + (self.level * 800)
+                        self.keystate = false
+                        self.keyblockActivated = true
+                    end
+                end
+
 
                 self.bricksHit = self.bricksHit + 1
-                if math.random(self.bricksHit, self.powerupChance) == self.powerupChance and self.powerup == nil then
-                    self.powerup = Powerup('multiball')
+
+                if math.random(self.bricksHit, self.powerupChance) == self.powerupChance then
+                    
+                    self.bricksHit = 0
+
+                    if self.keyblock and self.keypowerup == nil and not self.keystate and self.keyblockActivated then
+                        self.keypowerup = Powerup(10)
+                        table.insert(self.powerups, self.keypowerup)
+                        
+                    elseif self.powerup == nil then
+                        self.powerup = Powerup(9)
+                        table.insert(self.powerups, self.powerup)
+                    end
                 end
     
                 if self.score > self.increaseSizePoints then
@@ -157,6 +200,7 @@ function PlayState:update(dt)
                         recoverPoints = self.recoverPoints,
                         increaseSizePoints = self.increaseSizePoints,
                         increaseSize = self.increaseSize,
+                        keystate = self.keystate
                     })
                 end
 
@@ -243,7 +287,8 @@ function PlayState:update(dt)
                 recoverPoints = self.recoverPoints,
                 increaseSizePoints = self.increaseSizePoints,
                 increaseSize = self.increaseSize,
-                bricksHit = self.bricksHit
+                bricksHit = self.bricksHit,
+                keystate = self.keystate
             })
         end
     end
@@ -269,9 +314,13 @@ function PlayState:render()
         brick:renderParticles()
     end
 
-    love.graphics.print(tostring(self.bricksHit),0, 0, 0)
     self.paddle:render()
-    if self.powerup ~= nil then self.powerup:render() end
+    
+    if #self.powerups > 0 then
+        for p, powerup in pairs(self.powerups) do
+            powerup:render()
+        end
+    end
     
     for b, ball in pairs(self.balls) do
         ball:render()
@@ -280,7 +329,9 @@ function PlayState:render()
     renderScore(self.score)
     renderHealth(self.health)
 
-    love.graphics.print(tostring(tempball1), 0 , 50)
+    if self.keystate then
+        love.graphics.draw(gTextures['key'],10,VIRTUAL_HEIGHT-20)
+    end
 
     -- pause text, if paused
     if self.paused then
@@ -292,7 +343,7 @@ end
 
 function PlayState:checkVictory()
     for k, brick in pairs(self.bricks) do
-        if brick.inPlay then
+        if brick.inPlay and not brick.keybrick then
             return false
         end 
     end

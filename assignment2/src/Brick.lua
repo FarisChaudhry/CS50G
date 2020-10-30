@@ -64,8 +64,9 @@ function Brick:init(x, y)
     self.color = 1
 
     if self.keybrick then
-        self.tier = -1
+        self.tier = 5
         self.color = 6
+        self.activated = false
     end
 
     self.x = x
@@ -102,49 +103,64 @@ function Brick:hit()
     -- set the particle system to interpolate between two colors; in this case, we give
     -- it our self.color but with varying alpha; brighter for higher tiers, fading to 0
     -- over the particle's lifetime (the second color)
-    if not self.keybrick then
-        self.psystem:setColors(
-            paletteColors[self.color].r,
-            paletteColors[self.color].g,
-            paletteColors[self.color].b,
-            55 * (self.tier + 1),
-            paletteColors[self.color].r,
-            paletteColors[self.color].g,
-            paletteColors[self.color].b,
-            0
-        )
+    self.psystem:setColors(
+        paletteColors[self.color].r,
+        paletteColors[self.color].g,
+        paletteColors[self.color].b,
+        55 * (self.tier + 1),
+        paletteColors[self.color].r,
+        paletteColors[self.color].g,
+        paletteColors[self.color].b,
+        0
+    )
 
-        self.psystem:emit(64)
+    self.psystem:emit(64)
 
-        -- sound on hit
-        gSounds['brick-hit-2']:stop()
-        gSounds['brick-hit-2']:play()
+    -- sound on hit
+    gSounds['brick-hit-2']:stop()
+    gSounds['brick-hit-2']:play()
 
-        -- if we're at a higher tier than the base, we need to go down a tier
-        -- if we're already at the lowest color, else just go down a color
-        if self.tier > 0 then
-            if self.color == 1 then
-                self.tier = self.tier - 1
-                self.color = 5
-            else
-                self.color = self.color - 1
-            end
+    -- if we're at a higher tier than the base, we need to go down a tier
+    -- if we're already at the lowest color, else just go down a color
+    if self.tier > 0 then
+        if self.color == 1 then
+            self.tier = self.tier - 1
+            self.color = 5
         else
-            -- if we're in the first tier and the base color, remove brick from play
-            if self.color == 1 then
-                self.inPlay = false
-            else
-                self.color = self.color - 1
-            end
+            self.color = self.color - 1
         end
-
-        -- play a second layer sound if the brick is destroyed
-        if not self.inPlay then
-            gSounds['brick-hit-1']:stop()
-            gSounds['brick-hit-1']:play()
+    else
+        -- if we're in the first tier and the base color, remove brick from play
+        if self.color == 1 then
+            self.inPlay = false
+        else
+            self.color = self.color - 1
         end
     end
+
+        -- play a second layer sound if the brick is destroyed
+    if not self.inPlay then
+        gSounds['brick-hit-1']:stop()
+        gSounds['brick-hit-1']:play()
+    end
 end
+
+function Brick:keybrickHit(keystate)
+    if not self.activated then
+        if keystate then
+            gSounds['unlock']:stop()
+            gSounds['unlock']:play()
+            self.activated = true
+        else
+            gSounds['nokey']:stop()
+            gSounds['nokey']:play()
+        end
+    else
+        gSounds['brick-hit-1']:stop()
+        gSounds['brick-hit-1']:play()
+    end
+end
+
 
 function Brick:update(dt)
     self.psystem:update(dt)
@@ -159,7 +175,11 @@ function Brick:render()
                 gFrames['bricks'][1 + ((self.color - 1) * 4) + self.tier],
                 self.x, self.y)
         else
-            love.graphics.draw(gTextures['main'],gFrames['bricks'][22],self.x,self.y)
+            if not self.activated then
+                love.graphics.draw(gTextures['main'],gFrames['bricks'][22],self.x,self.y)
+            else
+                love.graphics.draw(gTextures['main'],gFrames['bricks'][21],self.x,self.y)
+            end
         end
     end
 end

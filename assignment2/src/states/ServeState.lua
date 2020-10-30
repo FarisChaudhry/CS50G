@@ -28,6 +28,7 @@ function ServeState:enter(params)
     self.increaseSize = params.increaseSize
     self.recoverPoints = params.recoverPoints
     self.bricksHit = params.bricksHit
+    self.keystate = params.keystate
 
     -- init new ball (random color for fun)
     self.ball = Ball()
@@ -52,7 +53,8 @@ function ServeState:update(dt)
             increaseSizePoints = self.increaseSizePoints,
             increaseSize = self.increaseSize,
             recoverPoints = self.recoverPoints,
-            bricksHit = self.bricksHit
+            bricksHit = self.bricksHit,
+            keystate = self.keystate
         })
     end
 
@@ -72,6 +74,10 @@ function ServeState:render()
     renderScore(self.score)
     renderHealth(self.health)
 
+    if self.keystate then
+        love.graphics.draw(gTextures['key'],10,VIRTUAL_HEIGHT-20)
+    end
+    
     love.graphics.setFont(gFonts['large'])
     love.graphics.printf('Level ' .. tostring(self.level), 0, VIRTUAL_HEIGHT / 3,
         VIRTUAL_WIDTH, 'center')

@@ -1,9 +1,9 @@
 Powerup = Class{}
 
-local types = {
-    ['multiball'] = 9,
-    ['key'] = 10
-}
+--[[
+['multiball'] = 9,
+['key'] = 10
+]]
 
 function Powerup:init(type)
     self.width = 8
@@ -16,7 +16,7 @@ function Powerup:init(type)
 
     self.inPlay = true
 
-    self.type = types[type]
+    self.type = type
 end
 
 function Powerup:collides(paddle)

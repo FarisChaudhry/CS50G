@@ -55,7 +55,8 @@ function PaddleSelectState:update(dt)
             increaseSizePoints = 1000,
             increaseSize = 1,
             recoverPoints = 5000,
-            bricksHit = 0
+            bricksHit = 0,
+            keystate = false
         })
     end
 

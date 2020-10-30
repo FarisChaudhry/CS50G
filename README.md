@@ -13,6 +13,6 @@
   - [x] Skybox Collision
 
 - Assignment 2 - Breakout (IN PROGRESS)
-  - [ ] Powerups
+  - [x] Powerups
   - [x] Resize Paddle
-  - [ ] Brick Key Mechanic
+  - [x] Keybrick + Powerup

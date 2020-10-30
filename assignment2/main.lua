@@ -56,7 +56,8 @@ function love.load()
         ['main'] = love.graphics.newImage('graphics/breakout.png'),
         ['arrows'] = love.graphics.newImage('graphics/arrows.png'),
         ['hearts'] = love.graphics.newImage('graphics/hearts.png'),
-        ['particle'] = love.graphics.newImage('graphics/particle.png')
+        ['particle'] = love.graphics.newImage('graphics/particle.png'),
+        ['key'] = love.graphics.newImage('graphics/key.png')
     }
 
     -- Quads we will generate for all of our textures; Quads allow us
@@ -96,6 +97,8 @@ function love.load()
         ['pause'] = love.audio.newSource('sounds/pause.wav'),
         ['powerup'] = love.audio.newSource('sounds/powerup.wav'),
         ['increasesize'] = love.audio.newSource('sounds/increasesize.wav'),
+        ['nokey'] = love.audio.newSource('sounds/nokey.wav'),
+        ['unlock'] = love.audio.newSource('sounds/unlock.wav'),
 
         ['music'] = love.audio.newSource('sounds/music.wav')
     }
