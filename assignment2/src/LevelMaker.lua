@@ -32,6 +32,8 @@ LevelMaker = Class{}
 ]]
 function LevelMaker.createMap(level)
     local bricks = {}
+    local hasKeybrickSpawned = false
+    local keybrickChance = 50
 
     -- randomly choose the number of rows
     local numRows = math.random(1, 5)
@@ -92,8 +94,13 @@ function LevelMaker.createMap(level)
                 + (13 - numCols) * 16,  -- left-side padding for when there are fewer than 13 columns
                 
                 -- y-coordinate
-                y * 16                  -- just use y * 16, since we need top padding anyway
+                y * 16                  -- just use y * 16, since we need top padding anyway       
             )
+
+            if math.random(keybrickChance) == keybrickChance and not hasKeybrickSpawned then
+                b.keybrick = true
+                hasKeybrickSpawned = true
+            end
 
             -- if we're alternating, figure out which color/tier we're on
             if alternatePattern and alternateFlag then

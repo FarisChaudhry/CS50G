@@ -32,6 +32,7 @@ function PlayState:enter(params)
     self.bricksHit = params.bricksHit
     self.increaseSize = params.increaseSize
     self.increaseSizePoints = params.increaseSizePoints
+    self.powerupChance = 100
 
     -- give ball random starting velocity
     self.ball.dx = math.random(-200, 200)
@@ -119,8 +120,7 @@ function PlayState:update(dt)
                 brick:hit()
 
                 self.bricksHit = self.bricksHit + 1
-                if math.random(self.bricksHit, 10) == 10 and self.powerup == nil then
-                    self.bricksHit = 0
+                if math.random(self.bricksHit, self.powerupChance) == self.powerupChance and self.powerup == nil then
                     self.powerup = Powerup('multiball')
                 end
     
@@ -280,7 +280,7 @@ function PlayState:render()
     renderScore(self.score)
     renderHealth(self.health)
 
-    love.graphics.print(tostring(self.tempball1),0,50)
+    love.graphics.print(tostring(tempball1), 0 , 50)
 
     -- pause text, if paused
     if self.paused then
