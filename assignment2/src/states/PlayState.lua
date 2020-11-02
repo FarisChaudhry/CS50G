@@ -227,7 +227,7 @@ function PlayState:update(dt)
                 elseif ball.x + 6 > brick.x + brick.width and ball.dx < 0 then
                     
                     -- flip x velocity and reset position outside of brick
-                    ball.dx = ball.dx
+                    ball.dx = -ball.dx
                     ball.x = brick.x + 32
                 
                 -- top edge if no X collisions, always check
