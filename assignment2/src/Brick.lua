@@ -64,7 +64,7 @@ function Brick:init(x, y)
     self.color = 1
 
     if self.keybrick then
-        self.tier = 5
+        self.tier = 10
         self.color = 6
         self.activated = false
     end
@@ -146,6 +146,20 @@ function Brick:hit()
 end
 
 function Brick:keybrickHit(keystate)
+
+    self.psystem:setColors(
+        paletteColors[6].r,
+        paletteColors[6].g,
+        paletteColors[6].b,
+        55 * (self.tier + 1),
+        paletteColors[6].r,
+        paletteColors[6].g,
+        paletteColors[6].b,
+        0
+    )
+
+    self.psystem:emit(64)
+
     if not self.activated then
         if keystate then
             gSounds['unlock']:stop()
