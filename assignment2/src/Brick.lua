@@ -158,10 +158,9 @@ function Brick:keybrickHit(keystate)
         0
     )
 
-    self.psystem:emit(64)
-
     if not self.activated then
         if keystate then
+            self.psystem:emit(64)
             gSounds['unlock']:stop()
             gSounds['unlock']:play()
             self.activated = true
@@ -172,6 +171,7 @@ function Brick:keybrickHit(keystate)
     else
         gSounds['brick-hit-1']:stop()
         gSounds['brick-hit-1']:play()
+        self.inPlay = false
     end
 end
 
