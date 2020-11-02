@@ -29,6 +29,7 @@ function ServeState:enter(params)
     self.recoverPoints = params.recoverPoints
     self.bricksHit = params.bricksHit
     self.keystate = params.keystate
+    self.keyblockActivated = params.keyblockActivated
 
     -- init new ball (random color for fun)
     self.ball = Ball()
@@ -54,7 +55,8 @@ function ServeState:update(dt)
             increaseSize = self.increaseSize,
             recoverPoints = self.recoverPoints,
             bricksHit = self.bricksHit,
-            keystate = self.keystate
+            keystate = self.keystate,
+            keyblockActivated = self.keyblockActivated
         })
     end
 

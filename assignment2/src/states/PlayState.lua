@@ -20,6 +20,7 @@ PlayState = Class{__includes = BaseState}
     We initialize what's in our PlayState via a state table that we pass between
     states as we go from playing to serving.
 ]]
+
 function PlayState:enter(params)
     self.paddle = params.paddle
     self.bricks = params.bricks
@@ -33,8 +34,9 @@ function PlayState:enter(params)
     self.increaseSize = params.increaseSize
     self.increaseSizePoints = params.increaseSizePoints
     self.keystate = params.keystate
-    
-    self.powerupChance = 50
+    self.keyblockActivated = params.keyblockActivated    
+
+    self.powerupChance =  30
     
     for k, brick in pairs(self.bricks) do
         if brick.keybrick then
@@ -45,7 +47,7 @@ function PlayState:enter(params)
         end
     end
 
-    if self.keyblock then
+    if self.keyblock and self.keyblockActivated == nil then
         self.keyblockActivated = false
     end
 
@@ -138,7 +140,6 @@ function PlayState:update(dt)
                 if not brick.keybrick then                   
                     -- add to score
                     self.score = self.score + (brick.tier * 200 + brick.color * 25)
-
                     -- trigger the brick's hit function, which removes it from play                    
                     brick:hit()
                 else        
@@ -157,7 +158,7 @@ function PlayState:update(dt)
                     
                     self.bricksHit = 0
 
-                    if self.keyblock and self.keypowerup == nil and not self.keystate and self.keyblockActivated then
+                    if self.keyblock and self.keypowerup == nil and not self.keystate and not self.keyblockActivated then
                         self.keypowerup = Powerup(10)
                         table.insert(self.powerups, self.keypowerup)
                         
@@ -204,7 +205,6 @@ function PlayState:update(dt)
                     })
                 end
 
-                --
                 -- collision code for bricks
                 --
                 -- we check to see if the opposite side of our velocity is outside of the brick;
@@ -250,7 +250,6 @@ function PlayState:update(dt)
                     ball.dy = ball.dy * 1.02
                 end
                 
-
                 -- only allow colliding with one brick, for corners
                 break
             end      
@@ -288,7 +287,8 @@ function PlayState:update(dt)
                 increaseSizePoints = self.increaseSizePoints,
                 increaseSize = self.increaseSize,
                 bricksHit = self.bricksHit,
-                keystate = self.keystate
+                keystate = self.keystate,
+                keyblockActivated = self.keyblockActivated
             })
         end
     end
