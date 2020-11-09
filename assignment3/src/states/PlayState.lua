@@ -71,6 +71,9 @@ function PlayState:enter(params)
 end
 
 function PlayState:update(dt)
+
+    self.board:update(dt)
+
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
@@ -223,6 +226,7 @@ end
 function PlayState:render()
     -- render board of tiles
     self.board:render()
+    self.board:renderParticles()
 
     -- render highlighted tile if it exists
     if self.highlightedTile then

@@ -52,11 +52,11 @@ gSounds = {
 
 gTextures = {
     ['main'] = love.graphics.newImage('graphics/match3.png'),
+    ['particle'] = love.graphics.newImage('graphics/particle.png'),
     ['background'] = love.graphics.newImage('graphics/background.png')
 }
 
 gFrames = {
-    
     -- divided into sets for each tile type in this game, instead of one large
     -- table of Quads
     ['tiles'] = GenerateTileQuads(gTextures['main'])
