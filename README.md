@@ -23,4 +23,4 @@
   - [ ] Mouse Interaction
   - [ ] Tile Progression
   - [ ] Only 1 Move Matches
-  - [ ]  Shiny Tiles
+  - [x]  Shiny Tiles

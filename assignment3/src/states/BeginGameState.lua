@@ -71,12 +71,14 @@ end
 
 function BeginGameState:update(dt)
     Timer.update(dt)
+    self.board:update(dt)
 end
 
 function BeginGameState:render()
     
     -- render board of tiles
     self.board:render()
+    self.board:renderParticles()
 
     -- render Level # label and background rect
     love.graphics.setColor(95, 205, 228, 200)

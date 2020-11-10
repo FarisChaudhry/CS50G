@@ -166,13 +166,35 @@ end
     them to nil, then setting self.matches to nil.
 ]]
 function Board:removeMatches()
+    local tilesRemoved = 0
+    local pointsToAdd = 0
+
     for k, match in pairs(self.matches) do
+        
+        --if the tile is shiny then remove the row
         for k, tile in pairs(match) do
-            self.tiles[tile.gridY][tile.gridX] = nil
+            if tile.shiny then  
+                for x = 1, #self.tiles[1] do
+                    tilesRemoved = tilesRemoved + 1
+                    pointsToAdd = pointsToAdd + self.tiles[tile.gridY][x].points
+                    self.tiles[tile.gridY][x] = nil
+                    
+                end
+            end
+        end
+        
+        --remove the rest of the tiles 
+        for k, tile in pairs(match) do 
+            if self.tiles[tile.gridY][tile.gridX] ~= nil then
+                tilesRemoved = tilesRemoved + 1
+                pointsToAdd = pointsToAdd + self.tiles[tile.gridY][tile.gridX].points
+                self.tiles[tile.gridY][tile.gridX] = nil  
+            end
         end
     end
 
     self.matches = nil
+    return tilesRemoved, pointsToAdd
 end
 
 --[[
@@ -276,5 +298,12 @@ function Board:update(dt)
         for x = 1, #self.tiles[1] do
             self.tiles[y][x]:updateParticles(dt)
         end
+    end
+end
+
+--remove row function called when a shiny block is destroyed
+function Board:removeRow(gridY)
+    for x = 1, #self.tiles[1] do
+        self.tiles[gridY][x] = nil
     end
 end

@@ -188,6 +188,8 @@ end
 ]]
 function PlayState:calculateMatches()
     self.highlightedTile = nil
+    local tilesRemoved = 0
+    local pointsToAdd = 0
 
     -- if we have any matches, remove them and tween the falling blocks that result
     local matches = self.board:calculateMatches()
@@ -196,14 +198,11 @@ function PlayState:calculateMatches()
         gSounds['match']:stop()
         gSounds['match']:play()
 
-        -- add score and time for each match
-        for k, match in pairs(matches) do
-            self.score = self.score + #match * 50
-            self.timer = self.timer + 1
-        end
-
         -- remove any tiles that matched from the board, making empty spaces
-        self.board:removeMatches()
+        tilesRemoved, pointsToAdd = self.board:removeMatches()
+        --add time and score for each tile removed
+        self.score = self.score + pointsToAdd
+        self.timer = self.timer + tilesRemoved
 
         -- gets a table with tween values for tiles that should now fall
         local tilesToFall = self.board:getFallingTiles()
