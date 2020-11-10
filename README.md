@@ -21,6 +21,6 @@
 - Assignment 3 - Match 3 (IN PROGRESS)
   - [x] Timer Addition
   - [ ] Mouse Interaction
-  - [ ] Tile Progression
+  - [x] Tile Progression
   - [ ] Only 1 Move Matches
   - [x]  Shiny Tiles

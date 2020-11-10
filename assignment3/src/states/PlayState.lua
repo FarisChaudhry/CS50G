@@ -61,7 +61,7 @@ function PlayState:enter(params)
     self.level = params.level
 
     -- spawn a board and place it toward the right
-    self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16)
+    self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16, self.level)
 
     -- grab score from params if it was passed
     self.score = params.score or 0
@@ -73,6 +73,9 @@ end
 function PlayState:update(dt)
 
     self.board:update(dt)
+
+    self.currentMouseX, self.currentMouseY = push:toGame(love.mouse.getX(),love.mouse.getY())
+    
 
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
@@ -193,7 +196,7 @@ function PlayState:calculateMatches()
 
     -- if we have any matches, remove them and tween the falling blocks that result
     local matches = self.board:calculateMatches()
-    
+
     if matches then
         gSounds['match']:stop()
         gSounds['match']:play()
@@ -263,4 +266,6 @@ function PlayState:render()
     love.graphics.printf('Score: ' .. tostring(self.score), 20, 52, 182, 'center')
     love.graphics.printf('Goal : ' .. tostring(self.scoreGoal), 20, 80, 182, 'center')
     love.graphics.printf('Timer: ' .. tostring(self.timer), 20, 108, 182, 'center')
+    love.graphics.print(tostring(self.currentMouseX),20,200)
+    love.graphics.print(tostring(self.currentMouseY),20,220)
 end

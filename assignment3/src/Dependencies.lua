@@ -68,3 +68,7 @@ gFonts = {
     ['medium'] = love.graphics.newFont('fonts/font.ttf', 16),
     ['large'] = love.graphics.newFont('fonts/font.ttf', 32)
 }
+
+--[[first tile x = 240
+    first tile y = 16
+    tile height and width = 32]]
