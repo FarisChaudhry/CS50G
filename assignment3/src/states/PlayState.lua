@@ -205,7 +205,7 @@ function PlayState:calculateMatches()
         self.timer = self.timer + tilesRemoved
 
         -- gets a table with tween values for tiles that should now fall
-        local tilesToFall = self.board:getFallingTiles()
+        local tilesToFall = self.board:getFallingTiles(self.level)
 
         -- tween new tiles that spawn from the ceiling over 0.25s to fill in
         -- the new upper gaps that exist
