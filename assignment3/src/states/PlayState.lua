@@ -148,39 +148,42 @@ function PlayState:update(dt)
                 gSounds['error']:play()
                 self.highlightedTile = nil
             else
-                
-                -- swap grid positions of tiles
-                local tempX = self.highlightedTile.gridX
-                local tempY = self.highlightedTile.gridY
-
-                local newTile = self.board.tiles[y][x]
-
-                self.highlightedTile.gridX = newTile.gridX
-                self.highlightedTile.gridY = newTile.gridY
-                newTile.gridX = tempX
-                newTile.gridY = tempY
-
-                -- swap tiles in the tiles table
-                self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
-                    self.highlightedTile
-
-                self.board.tiles[newTile.gridY][newTile.gridX] = newTile
-
-                -- tween coordinates between the two so they swap
-                Timer.tween(0.1, {
-                    [self.highlightedTile] = {x = newTile.x, y = newTile.y},
-                    [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}
-                })
-                
-                -- once the swap is finished, we can tween falling blocks as needed
-                :finish(function()
-                    self:calculateMatches()
-                end)
-            end
+                self:swapTiles(x,y)
+            end 
         end
     end
 
     Timer.update(dt)
+end
+
+function PlayState:swapTiles(x,y)
+    -- swap grid positions of tiles
+    local tempX = self.highlightedTile.gridX
+    local tempY = self.highlightedTile.gridY
+
+    local newTile = self.board.tiles[y][x]
+
+    self.highlightedTile.gridX = newTile.gridX
+    self.highlightedTile.gridY = newTile.gridY
+    newTile.gridX = tempX
+    newTile.gridY = tempY
+
+    -- swap tiles in the tiles table
+    self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
+        self.highlightedTile
+
+    self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+    -- tween coordinates between the two so they swap
+    Timer.tween(0.1, {
+        [self.highlightedTile] = {x = newTile.x, y = newTile.y},
+        [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}
+    })
+    
+    -- once the swap is finished, we can tween falling blocks as needed
+    :finish(function()
+        self:calculateMatches(true,x,y,newTile)
+    end)
 end
 
 --[[
@@ -189,8 +192,7 @@ end
     have matched and replaces them with new randomized tiles, deferring most of this
     to the Board class.
 ]]
-function PlayState:calculateMatches()
-    self.highlightedTile = nil
+function PlayState:calculateMatches(isFirstPass,x,y,newTile)
     local tilesRemoved = 0
     local pointsToAdd = 0
 
@@ -216,13 +218,45 @@ function PlayState:calculateMatches()
             
             -- recursively call function in case new matches have been created
             -- as a result of falling blocks once new blocks have finished falling
-            self:calculateMatches()
+            self:calculateMatches(false)
         end)
     
     -- if no matches, we can continue playing
     else
+        if isFirstPass then
+            gSounds['error']:stop()
+            gSounds['error']:play()
+            self:undoSwap(x,y,newTile)
+        end
+
         self.canInput = true
     end
+    --isFirstPass = false
+    self.highlightedTile = nil
+end
+
+function PlayState:undoSwap(x,y, newTile)
+    local tempX = self.highlightedTile.gridX
+    local tempY = self.highlightedTile.gridY
+
+    --local newTile = self.board.tiles[y][x]
+
+    self.highlightedTile.gridX = newTile.gridX
+    self.highlightedTile.gridY = newTile.gridY
+    newTile.gridX = tempX
+    newTile.gridY = tempY
+
+    -- swap tiles in the tiles table
+    self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
+        self.highlightedTile
+
+    self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+    -- tween coordinates between the two so they swap
+    Timer.tween(0.1, {
+        [self.highlightedTile] = {x = newTile.x, y = newTile.y},
+        [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}
+    })
 end
 
 function PlayState:render()

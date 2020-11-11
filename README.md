@@ -22,5 +22,6 @@
   - [x] Timer Addition
   - [ ] Mouse Interaction
   - [x] Tile Progression
-  - [ ] Only 1 Move Matches
+  - [x] Only 1 Move Matches
+  - [ ] Reset if No Matches
   - [x]  Shiny Tiles
