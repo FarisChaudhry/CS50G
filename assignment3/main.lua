@@ -55,7 +55,7 @@ function love.load()
     -- initialize our virtual resolution
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         vsync = false,
-        fullscreen = true,
+        fullscreen = false,
         resizable = true,
         canvas = true
     })
@@ -76,8 +76,10 @@ function love.load()
     -- keep track of scrolling our background on the X axis
     backgroundX = 0
 
-    -- initialize input table
+    -- initialize input table and set default input mode to keyboard only
+    inputMode = 'keyboard'
     love.keyboard.keysPressed = {}
+    love.mouse.buttonsPressed = {}
 end
 
 function love.resize(w, h)
@@ -98,6 +100,18 @@ function love.keyboard.wasPressed(key)
     end
 end
 
+function love.mousepressed(x,y,button)
+    love.mouse.buttonsPressed[button] = true
+end
+
+function love.mouse.wasPressed(button)
+    if love.mouse.buttonsPressed[button] then
+        return true
+    else
+        return false
+    end
+end
+
 function love.update(dt)
     
     -- scroll background, used across all states
@@ -111,6 +125,7 @@ function love.update(dt)
     gStateMachine:update(dt)
 
     love.keyboard.keysPressed = {}
+    love.mouse.buttonsPressed = {}
 end
 
 function love.draw()

@@ -14,7 +14,7 @@
 Tile = Class{}
 
 --1/shinychance is the chance for a brick to be shiny when instantiated
-local shinyChance = 50
+local shinyChance = 75
 
 function Tile:init(x, y, color, variety)
     -- board positions
@@ -40,7 +40,6 @@ function Tile:init(x, y, color, variety)
         self.psystem = love.graphics.newParticleSystem(gTextures['particle'],64)
         self.psystem:setParticleLifetime(0.5, 1)
         self.psystem:setEmissionRate(5)
-        --self.psystem:setLinearAcceleration(-15, 0, 15, 80)
         self.psystem:setAreaSpread('normal', 5, 5)
         self.psystem:setColors(255,255,255,255,255,255,255,0)
         self.psystem:start()

@@ -20,6 +20,7 @@ function StartState:init()
     
     -- currently selected menu item
     self.currentMenuItem = 1
+    self.menuColumn = 1
 
     -- colors we'll use to change the title text
     self.colors = {
@@ -81,7 +82,7 @@ function StartState:update(dt)
 
         -- switch to another state via one of the menu options
         if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-            if self.currentMenuItem == 1 then
+            if self.currentMenuItem == 1 and self.menuColumn == 1 then
                 
                 -- tween, using Timer, the transition rect's alpha to 255, then
                 -- transition to the BeginGame state after the animation is over
@@ -113,7 +114,7 @@ function StartState:render()
     -- render all tiles and their drop shadows
     for y = 1, 8 do
         for x = 1, 8 do
-            
+
             -- render shadow first
             love.graphics.setColor(0, 0, 0, 255)
             love.graphics.draw(gTextures['main'], positions[(y - 1) * x + x], 
@@ -180,6 +181,14 @@ function StartState:drawOptions(y)
     end
     
     love.graphics.printf('Start', 0, VIRTUAL_HEIGHT / 2 + y + 8, VIRTUAL_WIDTH, 'center')
+
+    -- second row for different mouse input
+    --[[mouse keyboard input rows and change up down based on column]]
+    love.graphics.setColor(255,255,255,128)
+    love.graphics.printf('Keyboard', 0, VIRTUAL_HEIGHT / 2 + y + 8, VIRTUAL_WIDTH / 2, 'center')
+
+    love.graphics.setColor(255,255,255,128)
+    love.graphics.printf('Mouse',0, VIRTUAL_HEIGHT /2 + y + 33, VIRTUAL_WIDTH / 2, 'center')
 
     -- draw Quit Game text
     love.graphics.setFont(gFonts['medium'])

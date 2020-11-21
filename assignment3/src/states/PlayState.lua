@@ -62,7 +62,7 @@ function PlayState:enter(params)
 
     -- spawn a board and place it toward the right
     self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16, self.level)
-
+   
     -- grab score from params if it was passed
     self.score = params.score or 0
 
@@ -112,48 +112,92 @@ function PlayState:update(dt)
     end
 
     if self.canInput then
-        -- move cursor around based on bounds of grid, playing sounds
-        if love.keyboard.wasPressed('up') then
-            self.boardHighlightY = math.max(0, self.boardHighlightY - 1)
-            gSounds['select']:play()
-        elseif love.keyboard.wasPressed('down') then
-            self.boardHighlightY = math.min(7, self.boardHighlightY + 1)
-            gSounds['select']:play()
-        elseif love.keyboard.wasPressed('left') then
-            self.boardHighlightX = math.max(0, self.boardHighlightX - 1)
-            gSounds['select']:play()
-        elseif love.keyboard.wasPressed('right') then
-            self.boardHighlightX = math.min(7, self.boardHighlightX + 1)
-            gSounds['select']:play()
-        end
+        if inputMode == 'keyboard' then
+            -- move cursor around based on bounds of grid, playing sounds
+            if love.keyboard.wasPressed('up') then
+                self.boardHighlightY = math.max(0, self.boardHighlightY - 1)
+                gSounds['select']:play()
+            elseif love.keyboard.wasPressed('down') then
+                self.boardHighlightY = math.min(7, self.boardHighlightY + 1)
+                gSounds['select']:play()
+            elseif love.keyboard.wasPressed('left') then
+                self.boardHighlightX = math.max(0, self.boardHighlightX - 1)
+                gSounds['select']:play()
+            elseif love.keyboard.wasPressed('right') then
+                self.boardHighlightX = math.min(7, self.boardHighlightX + 1)
+                gSounds['select']:play()
+            end
 
-        -- if we've pressed enter, to select or deselect a tile...
-        if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-            
-            -- if same tile as currently highlighted, deselect
-            local x = self.boardHighlightX + 1
-            local y = self.boardHighlightY + 1
-            
-            -- if nothing is highlighted, highlight current tile
-            if not self.highlightedTile then
-                self.highlightedTile = self.board.tiles[y][x]
-
-            -- if we select the position already highlighted, remove highlight
-            elseif self.highlightedTile == self.board.tiles[y][x] then
-                self.highlightedTile = nil
-
-            -- if the difference between X and Y combined of this highlighted tile
-            -- vs the previous is not equal to 1, also remove highlight
-            elseif math.abs(self.highlightedTile.gridX - x) + math.abs(self.highlightedTile.gridY - y) > 1 then
-                gSounds['error']:play()
-                self.highlightedTile = nil
-            else
-                self:swapTiles(x,y)
-            end 
+            -- if we've pressed enter, to select or deselect a tile...
+            if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
+                self:inputLogic()
+            end
         end
     end
 
     Timer.update(dt)
+end
+
+function PlayState:isPossibleMatch()
+    local tempBoard = self.board
+
+    for y = 1,7 do
+        for x = 1,7 do
+
+            --horizontal swap
+            self:testboardSwap(tempBoard.tiles[x][y],tempBoard.tiles[x+1][y],tempBoard)
+            if tempBoard:checkIfMatch() then
+                return true
+            else
+                tempBoard = self.board
+            end
+
+            --vertial swap
+            self:testboardSwap(tempBoard.tiles[x][y],tempBoard.tiles[x][y+1],tempBoard)
+            if tempBoard:checkIfMatch() then
+                return true
+            else
+                tempBoard = self.board
+            end
+        end
+    end
+    return false
+end
+
+function PlayState:inputLogic()
+     -- if same tile as currently highlighted, deselect
+     local x = self.boardHighlightX + 1
+     local y = self.boardHighlightY + 1
+     
+     -- if nothing is highlighted, highlight current tile
+     if not self.highlightedTile then
+         self.highlightedTile = self.board.tiles[y][x]
+
+     -- if we select the position already highlighted, remove highlight
+     elseif self.highlightedTile == self.board.tiles[y][x] then
+         self.highlightedTile = nil
+
+     -- if the difference between X and Y combined of this highlighted tile
+     -- vs the previous is not equal to 1, also remove highlight
+     elseif math.abs(self.highlightedTile.gridX - x) + math.abs(self.highlightedTile.gridY - y) > 1 then
+         gSounds['error']:play()
+         self.highlightedTile = nil
+     else
+         self:swapTiles(x,y)
+     end 
+end
+
+function PlayState:testboardSwap(tile1,tile2,board)
+    local tempX = tile1.gridX
+    local tempY = tile1.gridY
+
+    tile1.gridX, tile1.gridY = tile2.gridX,tile2.gridY
+    tile2.gridX, tile2.gridY = tempX, tempY
+
+    -- swap tiles in the tiles table
+    board.tiles[tile1.gridY][tile1.gridX] = tile1
+
+    board.tiles[tile2.gridY][tile2.gridX] = tile2
 end
 
 function PlayState:swapTiles(x,y)
