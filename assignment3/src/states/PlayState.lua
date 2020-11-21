@@ -24,8 +24,10 @@ function PlayState:init()
     self.transitionAlpha = 255
 
     -- position in the grid which we're highlighting
-    self.boardHighlightX = 0
-    self.boardHighlightY = 0
+    if inputMode == 'keyboard' then
+        self.boardHighlightX = 0
+        self.boardHighlightY = 0
+    end
 
     -- timer used to switch the highlight rect's color
     self.rectHighlighted = false
