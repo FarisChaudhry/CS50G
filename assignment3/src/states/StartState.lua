@@ -185,10 +185,10 @@ function StartState:drawOptions(y)
     -- second row for different mouse input
     --[[mouse keyboard input rows and change up down based on column]]
     love.graphics.setColor(255,255,255,128)
-    love.graphics.printf('Keyboard', 0, VIRTUAL_HEIGHT / 2 + y + 8, VIRTUAL_WIDTH / 2, 'center')
+    love.graphics.printf('Keyboard', 0, VIRTUAL_HEIGHT / 2 + y + 8, VIRTUAL_WIDTH / 4, 'center')
 
     love.graphics.setColor(255,255,255,128)
-    love.graphics.printf('Mouse',0, VIRTUAL_HEIGHT /2 + y + 33, VIRTUAL_WIDTH / 2, 'center')
+    love.graphics.printf('Mouse',0, VIRTUAL_HEIGHT /2 + y + 33, VIRTUAL_WIDTH / 4, 'center')
 
     -- draw Quit Game text
     love.graphics.setFont(gFonts['medium'])

@@ -77,7 +77,7 @@ function love.load()
     backgroundX = 0
 
     -- initialize input table and set default input mode to keyboard only
-    inputMode = 'keyboard'
+    inputMode = 'mouse'
     love.keyboard.keysPressed = {}
     love.mouse.buttonsPressed = {}
 end

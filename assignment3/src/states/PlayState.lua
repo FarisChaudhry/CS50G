@@ -19,7 +19,7 @@
 PlayState = Class{__includes = BaseState}
 
 function PlayState:init()
-    
+
     -- start our transition alpha at full, so we fade in
     self.transitionAlpha = 255
 
@@ -58,13 +58,13 @@ function PlayState:init()
 end
 
 function PlayState:enter(params)
-    
+
     -- grab level # from the params we're passed
     self.level = params.level
 
     -- spawn a board and place it toward the right
     self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16, self.level)
-   
+ 
     -- grab score from params if it was passed
     self.score = params.score or 0
 
@@ -77,7 +77,7 @@ function PlayState:update(dt)
     self.board:update(dt)
 
     self.currentMouseX, self.currentMouseY = push:toGame(love.mouse.getX(),love.mouse.getY())
-    
+
 
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
@@ -85,10 +85,10 @@ function PlayState:update(dt)
 
     -- go back to start if time runs out
     if self.timer <= 0 then
-        
+
         -- clear timers from prior PlayStates
         Timer.clear()
-        
+
         gSounds['game-over']:play()
 
         gStateMachine:change('game-over', {
@@ -98,7 +98,7 @@ function PlayState:update(dt)
 
     -- go to next level if we surpass score goal
     if self.score >= self.scoreGoal then
-        
+
         -- clear timers from prior PlayStates
         -- always clear before you change state, else next state's timers
         -- will also clear!
@@ -132,6 +132,18 @@ function PlayState:update(dt)
 
             -- if we've pressed enter, to select or deselect a tile...
             if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
+                self:inputLogic()
+            end
+        elseif inputMode == 'mouse' then
+            --todo mouse input
+            if 240 <= self.currentMouseX and self.currentMouseX <= VIRTUAL_WIDTH - 16 and 16 <= self.currentMouseY and self.currentMouseY <= VIRTUAL_HEIGHT - 16 then
+                self.boardHighlightY = math.floor((self.currentMouseY - 16) / 32)
+                self.boardHighlightX = math.floor((self.currentMouseX - 240) / 32)
+            else
+                self.boardHighlightX, self.boardHighlightY = nil,nil
+            end
+
+            if love.mouse.wasPressed(1) then
                 self:inputLogic()
             end
         end
@@ -170,7 +182,7 @@ function PlayState:inputLogic()
      -- if same tile as currently highlighted, deselect
      local x = self.boardHighlightX + 1
      local y = self.boardHighlightY + 1
-     
+
      -- if nothing is highlighted, highlight current tile
      if not self.highlightedTile then
          self.highlightedTile = self.board.tiles[y][x]
@@ -186,7 +198,7 @@ function PlayState:inputLogic()
          self.highlightedTile = nil
      else
          self:swapTiles(x,y)
-     end 
+     end
 end
 
 function PlayState:testboardSwap(tile1,tile2,board)
@@ -225,7 +237,7 @@ function PlayState:swapTiles(x,y)
         [self.highlightedTile] = {x = newTile.x, y = newTile.y},
         [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}
     })
-    
+
     -- once the swap is finished, we can tween falling blocks as needed
     :finish(function()
         self:calculateMatches(true,x,y,newTile)
@@ -261,12 +273,12 @@ function PlayState:calculateMatches(isFirstPass,x,y,newTile)
         -- tween new tiles that spawn from the ceiling over 0.25s to fill in
         -- the new upper gaps that exist
         Timer.tween(0.25, tilesToFall):finish(function()
-            
+
             -- recursively call function in case new matches have been created
             -- as a result of falling blocks once new blocks have finished falling
             self:calculateMatches(false)
         end)
-    
+
     -- if no matches, we can continue playing
     else
         if isFirstPass then
@@ -312,7 +324,7 @@ function PlayState:render()
 
     -- render highlighted tile if it exists
     if self.highlightedTile then
-        
+
         -- multiply so drawing white rect makes it brighter
         love.graphics.setBlendMode('add')
 
@@ -333,8 +345,10 @@ function PlayState:render()
 
     -- draw actual cursor rect
     love.graphics.setLineWidth(4)
-    love.graphics.rectangle('line', self.boardHighlightX * 32 + (VIRTUAL_WIDTH - 272),
-        self.boardHighlightY * 32 + 16, 32, 32, 4)
+    if self.boardHighlightX ~= nil and self.boardHighlightY ~= nil then
+        love.graphics.rectangle('line', self.boardHighlightX * 32 + (VIRTUAL_WIDTH - 272),
+            self.boardHighlightY * 32 + 16, 32, 32, 4)
+    end
 
     -- GUI text
     love.graphics.setColor(56, 56, 56, 234)
