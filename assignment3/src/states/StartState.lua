@@ -20,6 +20,7 @@ function StartState:init()
     
     -- currently selected menu item
     self.currentMenuItem = 1
+    self.currentMenuColumn = 1
     self.menuColumn = 1
 
     -- colors we'll use to change the title text
@@ -80,28 +81,45 @@ function StartState:update(dt)
             gSounds['select']:play()
         end
 
+        --change menu column selection
+        if love.keyboard.wasPressed('left') then
+            self.currentMenuColumn = math.max(self.currentMenuColumn - 1, 0)
+        end
+
+        if love.keyboard.wasPressed('right') then
+            self.currentMenuColumn = math.min(self.currentMenuColumn + 1, 1)
+        end
+
         -- switch to another state via one of the menu options
         if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-            if self.currentMenuItem == 1 and self.menuColumn == 1 then
-                
-                -- tween, using Timer, the transition rect's alpha to 255, then
-                -- transition to the BeginGame state after the animation is over
-                Timer.tween(1, {
-                    [self] = {transitionAlpha = 255}
-                }):finish(function()
-                    gStateMachine:change('begin-game', {
-                        level = 1
-                    })
+            if self.currentMenuColumn == 0 then
+                if self.currentMenuItem == 1 then
+                    inputMode = 'keyboard'
+                elseif self.currentMenuItem == 2 then
+                    inputMode = 'mouse'
+                end
 
-                    -- remove color timer from Timer
-                    self.colorTimer:remove()
-                end)
-            else
-                love.event.quit()
+            elseif self.currentMenuColumn == 1 then
+                if self.currentMenuItem == 1 then
+                        -- tween, using Timer, the transition rect's alpha to 255, then
+                    -- transition to the BeginGame state after the animation is over
+                    Timer.tween(1, {
+                        [self] = {transitionAlpha = 255}
+                    }):finish(function()
+                        gStateMachine:change('begin-game', {
+                            level = 1
+                        })
+
+                        -- remove color timer from Timer
+                        self.colorTimer:remove()
+                    end)
+                elseif self.currentMenuItem == 2 then
+                    love.event.quit()
+                end
+            
+                -- turn off input during transition
+                self.pauseInput = true
             end
-
-            -- turn off input during transition
-            self.pauseInput = true
         end
     end
 
@@ -132,7 +150,7 @@ function StartState:render()
     love.graphics.rectangle('fill', 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 
     self:drawMatch3Text(-60)
-    self:drawOptions(12)
+    self:drawOptions(50)
 
     -- draw our transition rect; is normally fully transparent, unless we're moving to a new state
     love.graphics.setColor(255, 255, 255, self.transitionAlpha)
@@ -151,7 +169,7 @@ function StartState:drawMatch3Text(y)
 
     -- draw MATCH 3 text shadows
     love.graphics.setFont(gFonts['large'])
-    self:drawTextShadow('MATCH 3', VIRTUAL_HEIGHT / 2 + y)
+    self:drawTextShadow('MATCH 3', VIRTUAL_HEIGHT / 2 + y, 1)
 
     -- print MATCH 3 letters in their corresponding current colors
     for i = 1, 6 do
@@ -172,45 +190,59 @@ function StartState:drawOptions(y)
 
     -- draw Start text
     love.graphics.setFont(gFonts['medium'])
-    self:drawTextShadow('Start', VIRTUAL_HEIGHT / 2 + y + 8)
+    self:drawTextShadow('Start', VIRTUAL_HEIGHT / 2 + y + 8, 1)
     
-    if self.currentMenuItem == 1 then
+    if self.currentMenuItem == 1 and self.currentMenuColumn == 1 then
         love.graphics.setColor(99, 155, 255, 255)
     else
         love.graphics.setColor(48, 96, 130, 255)
     end
-    
     love.graphics.printf('Start', 0, VIRTUAL_HEIGHT / 2 + y + 8, VIRTUAL_WIDTH, 'center')
-
-    -- second row for different mouse input
-    --[[mouse keyboard input rows and change up down based on column]]
-    love.graphics.setColor(255,255,255,128)
-    love.graphics.printf('Keyboard', 0, VIRTUAL_HEIGHT / 2 + y + 8, VIRTUAL_WIDTH / 4, 'center')
-
-    love.graphics.setColor(255,255,255,128)
-    love.graphics.printf('Mouse',0, VIRTUAL_HEIGHT /2 + y + 33, VIRTUAL_WIDTH / 4, 'center')
 
     -- draw Quit Game text
     love.graphics.setFont(gFonts['medium'])
-    self:drawTextShadow('Quit Game', VIRTUAL_HEIGHT / 2 + y + 33)
+    self:drawTextShadow('Quit Game', VIRTUAL_HEIGHT / 2 + y + 33, 1)
     
-    if self.currentMenuItem == 2 then
+    if self.currentMenuItem == 2 and self.currentMenuColumn == 1 then
         love.graphics.setColor(99, 155, 255, 255)
     else
         love.graphics.setColor(48, 96, 130, 255)
     end
-    
     love.graphics.printf('Quit Game', 0, VIRTUAL_HEIGHT / 2 + y + 33, VIRTUAL_WIDTH, 'center')
+
+    -- draw shadows based on chosen mode
+    love.graphics.setFont(gFonts['medium'])
+    if inputMode == 'keyboard' then
+        self:drawTextShadow('Keyboard', VIRTUAL_HEIGHT / 2 + y + 8, 4)
+    elseif inputMode == 'mouse' then
+        self:drawTextShadow('Mouse', VIRTUAL_HEIGHT / 2 + y + 33, 4)
+    end
+
+    -- draw Keyboard text
+    if self.currentMenuItem == 1 and self.currentMenuColumn == 0 then
+        love.graphics.setColor(99, 155, 255, 255)
+    else
+        love.graphics.setColor(48, 96, 130, 255)
+    end
+    love.graphics.printf('Keyboard', 0, VIRTUAL_HEIGHT / 2 + y + 8, VIRTUAL_WIDTH / 4, 'center')
+
+    -- draw Mouse text
+    if self.currentMenuItem == 2 and self.currentMenuColumn == 0 then
+        love.graphics.setColor(99, 155, 255, 255)
+    else
+        love.graphics.setColor(48, 96, 130, 255)
+    end
+    love.graphics.printf('Mouse',0, VIRTUAL_HEIGHT /2 + y + 33, VIRTUAL_WIDTH / 4, 'center')
 end
 
 --[[
     Helper function for drawing just text backgrounds; draws several layers of the same text, in
     black, over top of one another for a thicker shadow.
 ]]
-function StartState:drawTextShadow(text, y)
+function StartState:drawTextShadow(text, y, scalefactor)
     love.graphics.setColor(34, 32, 52, 255)
-    love.graphics.printf(text, 2, y + 1, VIRTUAL_WIDTH, 'center')
-    love.graphics.printf(text, 1, y + 1, VIRTUAL_WIDTH, 'center')
-    love.graphics.printf(text, 0, y + 1, VIRTUAL_WIDTH, 'center')
-    love.graphics.printf(text, 1, y + 2, VIRTUAL_WIDTH, 'center')
+    love.graphics.printf(text, 2, y + 1, VIRTUAL_WIDTH / scalefactor, 'center')
+    love.graphics.printf(text, 1, y + 1, VIRTUAL_WIDTH / scalefactor, 'center')
+    love.graphics.printf(text, 0, y + 1, VIRTUAL_WIDTH / scalefactor, 'center')
+    love.graphics.printf(text, 1, y + 2, VIRTUAL_WIDTH / scalefactor, 'center')
 end
