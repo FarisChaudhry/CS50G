@@ -84,10 +84,12 @@ function StartState:update(dt)
         --change menu column selection
         if love.keyboard.wasPressed('left') then
             self.currentMenuColumn = math.max(self.currentMenuColumn - 1, 0)
+            gSounds['select']:play()
         end
 
         if love.keyboard.wasPressed('right') then
             self.currentMenuColumn = math.min(self.currentMenuColumn + 1, 1)
+            gSounds['select']:play()
         end
 
         -- switch to another state via one of the menu options

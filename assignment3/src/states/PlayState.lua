@@ -64,7 +64,7 @@ function PlayState:enter(params)
 
     -- spawn a board and place it toward the right
     self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16, self.level)
- 
+
     -- grab score from params if it was passed
     self.score = params.score or 0
 
@@ -135,7 +135,6 @@ function PlayState:update(dt)
                 self:inputLogic()
             end
         elseif inputMode == 'mouse' then
-            --todo mouse input
             if 240 <= self.currentMouseX and self.currentMouseX <= VIRTUAL_WIDTH - 16 and 16 <= self.currentMouseY and self.currentMouseY <= VIRTUAL_HEIGHT - 16 then
                 self.boardHighlightY = math.floor((self.currentMouseY - 16) / 32)
                 self.boardHighlightX = math.floor((self.currentMouseX - 240) / 32)
@@ -152,31 +151,6 @@ function PlayState:update(dt)
     Timer.update(dt)
 end
 
-function PlayState:isPossibleMatch()
-    local tempBoard = self.board
-
-    for y = 1,7 do
-        for x = 1,7 do
-
-            --horizontal swap
-            self:testboardSwap(tempBoard.tiles[x][y],tempBoard.tiles[x+1][y],tempBoard)
-            if tempBoard:checkIfMatch() then
-                return true
-            else
-                tempBoard = self.board
-            end
-
-            --vertial swap
-            self:testboardSwap(tempBoard.tiles[x][y],tempBoard.tiles[x][y+1],tempBoard)
-            if tempBoard:checkIfMatch() then
-                return true
-            else
-                tempBoard = self.board
-            end
-        end
-    end
-    return false
-end
 
 function PlayState:inputLogic()
      -- if same tile as currently highlighted, deselect
@@ -199,19 +173,6 @@ function PlayState:inputLogic()
      else
          self:swapTiles(x,y)
      end
-end
-
-function PlayState:testboardSwap(tile1,tile2,board)
-    local tempX = tile1.gridX
-    local tempY = tile1.gridY
-
-    tile1.gridX, tile1.gridY = tile2.gridX,tile2.gridY
-    tile2.gridX, tile2.gridY = tempX, tempY
-
-    -- swap tiles in the tiles table
-    board.tiles[tile1.gridY][tile1.gridX] = tile1
-
-    board.tiles[tile2.gridY][tile2.gridX] = tile2
 end
 
 function PlayState:swapTiles(x,y)
@@ -278,7 +239,7 @@ function PlayState:calculateMatches(isFirstPass,x,y,newTile)
             -- as a result of falling blocks once new blocks have finished falling
             self:calculateMatches(false)
         end)
-
+        
     -- if no matches, we can continue playing
     else
         if isFirstPass then
@@ -345,7 +306,7 @@ function PlayState:render()
 
     -- draw actual cursor rect
     love.graphics.setLineWidth(4)
-    if self.boardHighlightX ~= nil and self.boardHighlightY ~= nil then
+    if self.boardHighlightX and self.boardHighlightY  then
         love.graphics.rectangle('line', self.boardHighlightX * 32 + (VIRTUAL_WIDTH - 272),
             self.boardHighlightY * 32 + 16, 32, 32, 4)
     end
