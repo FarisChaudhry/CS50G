@@ -151,6 +151,46 @@ function PlayState:update(dt)
     Timer.update(dt)
 end
 
+function PlayState:checkIfMatch()
+    local tilesCopy = self.board.tiles
+
+    for y = 1,7 do
+        for x = 1,7 do 
+
+            tilesCopy = self:tileSwap(tilesCopy[x][y],tilesCopy[x+1][y],tilesCopy)
+            if self:testForMatch(tiles) then
+                return true
+            else
+                tilesCopy = self.board.tiles
+            end
+
+            tilesCopy = self:tileSwap(tilesCopy[x][y],tilesCopy[x][y+1] ,tilesCopy)
+            if self:testForMatch(tiles) then
+                return true
+            else
+                tilesCopy = self.board.tiles
+            end
+        end
+    end
+    return false
+end
+
+function tileSwap(tile1,tile2,tiles)
+    --swap grid positions of tiles
+    local tempX,tempY = tile1.gridX,tile1.gridY
+    
+    tile1.gridX,tile1.gridY = tile2.gridX,tile2.gridY
+    tile2.gridX,tile2.gridY = tempX,tempY
+
+    tiles[tile1.gridX][tile1.gridY] = tile1
+    tiles[tile2.gridX][tile2.gridY] = tile2
+
+    return tiles
+end
+
+function PlayState:testForMatch(tiles)
+
+end
 
 function PlayState:inputLogic()
      -- if same tile as currently highlighted, deselect
