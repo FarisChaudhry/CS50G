@@ -64,7 +64,8 @@ function PlayState:enter(params)
 
     -- spawn a board and place it toward the right
     self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16, self.level)
-
+    self.board:isMatchPossible()
+  
     -- grab score from params if it was passed
     self.score = params.score or 0
 
@@ -138,58 +139,17 @@ function PlayState:update(dt)
             if 240 <= self.currentMouseX and self.currentMouseX <= VIRTUAL_WIDTH - 16 and 16 <= self.currentMouseY and self.currentMouseY <= VIRTUAL_HEIGHT - 16 then
                 self.boardHighlightY = math.floor((self.currentMouseY - 16) / 32)
                 self.boardHighlightX = math.floor((self.currentMouseX - 240) / 32)
+
+                if love.mouse.wasPressed(1) then
+                    self:inputLogic()
+                end
             else
                 self.boardHighlightX, self.boardHighlightY = nil,nil
-            end
-
-            if love.mouse.wasPressed(1) then
-                self:inputLogic()
             end
         end
     end
 
     Timer.update(dt)
-end
-
-function PlayState:checkIfMatch()
-    local tilesCopy = self.board.tiles
-
-    for y = 1,7 do
-        for x = 1,7 do 
-
-            tilesCopy = self:tileSwap(tilesCopy[x][y],tilesCopy[x+1][y],tilesCopy)
-            if self:testForMatch(tiles) then
-                return true
-            else
-                tilesCopy = self.board.tiles
-            end
-
-            tilesCopy = self:tileSwap(tilesCopy[x][y],tilesCopy[x][y+1] ,tilesCopy)
-            if self:testForMatch(tiles) then
-                return true
-            else
-                tilesCopy = self.board.tiles
-            end
-        end
-    end
-    return false
-end
-
-function tileSwap(tile1,tile2,tiles)
-    --swap grid positions of tiles
-    local tempX,tempY = tile1.gridX,tile1.gridY
-    
-    tile1.gridX,tile1.gridY = tile2.gridX,tile2.gridY
-    tile2.gridX,tile2.gridY = tempX,tempY
-
-    tiles[tile1.gridX][tile1.gridY] = tile1
-    tiles[tile2.gridX][tile2.gridY] = tile2
-
-    return tiles
-end
-
-function PlayState:testForMatch(tiles)
-
 end
 
 function PlayState:inputLogic()
@@ -286,6 +246,8 @@ function PlayState:calculateMatches(isFirstPass,x,y,newTile)
             gSounds['error']:stop()
             gSounds['error']:play()
             self:undoSwap(x,y,newTile)
+        else
+            self.board:isMatchPossible()
         end
 
         self.canInput = true

@@ -309,3 +309,22 @@ function Board:removeRow(gridY)
         self.tiles[gridY][x] = nil
     end
 end
+
+function Board:isMatchPossible()
+    local tilesCopy = self.tiles
+
+    --[[
+        --TODO
+        horizontal and vertical swaps
+        check if any matches
+
+        if no matches then reinitialize tiles and check again
+        until there is atleast 1 match
+    ]]
+
+    for y = 1,7 do
+        for x = 1, 7 do
+
+        end
+    end
+end
