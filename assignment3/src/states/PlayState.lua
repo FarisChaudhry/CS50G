@@ -64,7 +64,7 @@ function PlayState:enter(params)
 
     -- spawn a board and place it toward the right
     self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16, self.level)
-    self.board:isMatchPossible()
+    self.board:resetBoard()
   
     -- grab score from params if it was passed
     self.score = params.score or 0
@@ -247,7 +247,7 @@ function PlayState:calculateMatches(isFirstPass,x,y,newTile)
             gSounds['error']:play()
             self:undoSwap(x,y,newTile)
         else
-            self.board:isMatchPossible()
+            self.board:resetBoard()
         end
 
         self.canInput = true

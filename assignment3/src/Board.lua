@@ -17,6 +17,7 @@ function Board:init(x, y, level)
     self.x = x
     self.y = y
     self.matches = {}
+    self.level = level
 
     self:initializeTiles(level)
 end
@@ -313,18 +314,37 @@ end
 function Board:isMatchPossible()
     local tilesCopy = self.tiles
 
-    --[[
-        --TODO
-        horizontal and vertical swaps
-        check if any matches
-
-        if no matches then reinitialize tiles and check again
-        until there is atleast 1 match
-    ]]
-
     for y = 1,7 do
         for x = 1, 7 do
+            
+            --horizontal swap
+            local tempTile = tilesCopy[y][x]
+            tilesCopy[y][x] = tilesCopy[y][x+1]
+            tilesCopy[y][x+1] = tempTile
+            tilesCopy:calculateMatches()
+            if #tilesCopy.matches > 0 then
+                return true
+            else
+                tilesCopy = self.tiles
+            end
 
+            --vertical swap
+            local tempTile = tilesCopy[y][x]
+            tilesCopy[y][x] = tilesCopy[y+1][x]
+            tilesCopy[y+1][x] = tempTile
+            tilesCopy:calculateMatches()
+            if #tilesCopy.matches > 0 then
+                return true
+            else
+                tilesCopy = self.tiles
+            end
         end
+    end
+    return false
+end
+
+function Board:resetBoard()
+    while not self:isMatchPossible() do
+        self:initializeTiles(self.level)
     end
 end
