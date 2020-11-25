@@ -64,13 +64,13 @@ function PlayState:enter(params)
 
     -- spawn a board and place it toward the right
     self.board = params.board or Board(self.level, VIRTUAL_WIDTH - 272, 16)
-    
+
     self.possibleMatchNum = self.board:matchesPossible()
     while self.possibleMatchNum == 0  do
         self.board = Board(self.level, VIRTUAL_WIDTH - 272, 16)
         self.possibleMatchNum = self.board:matchesPossible()
     end
-    
+
     -- grab score from params if it was passed
     self.score = params.score or 0
 
@@ -246,7 +246,7 @@ function PlayState:calculateMatches(isFirstPass,x,y,newTile)
             -- as a result of falling blocks once new blocks have finished falling
             self:calculateMatches(false)
         end)
-        
+
     -- if no matches, we can continue playing
     else
         if isFirstPass then

@@ -5,23 +5,23 @@
  Introduction to Game Development
 
 - Assignment 0 - Pong ([Video](https://youtu.be/Pl4XFRx5gYs))
-  - [x] Paddle AI
+  - [x] paddle ai
 
 - Assignment 1 - Flappy Bird ([Video](https://youtu.be/WxNL9tlGBVQ))
-  - [x] Pause Feature
-  - [x] Medals
-  - [x] Procedural Pipe Generation
-  - [x] Skybox Collision
+  - [x] pause
+  - [x] medals
+  - [x] procedural pipe peneration
+  - [x] skybox collision
 
 - Assignment 2 - Breakout ([Video](https://www.youtube.com/watch?v=ZYPjQrHvKHY))
-  - [x] Powerups
-  - [x] Resize Paddle
-  - [x] Keybrick and Powerup
+  - [x] powerups
+  - [x] resize paddle
+  - [x] keybrick and key powerup
 
 - Assignment 3 - Match 3 (IN PROGRESS)
-  - [x] Timer Addition
-  - [ ] Mouse Interaction
-  - [x] Tile Progression
-  - [x] Only 1 Move Matches
-  - [ ] Reset if No Matches
-  - [x]  Shiny Tiles
+  - [x] timer increment
+  - [x] mouse support
+  - [x] tile progression
+  - [x] one-move matches
+  - [x] reset board
+  - [x] shiny tiles
