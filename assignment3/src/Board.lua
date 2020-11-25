@@ -13,9 +13,9 @@
 
 Board = Class{}
 
-function Board:init(x, y, level)
-    self.x = x
-    self.y = y
+function Board:init(level, x, y)
+    self.x = x or nil
+    self.y = y or nil
     self.matches = {}
     self.level = level
 
@@ -311,40 +311,38 @@ function Board:removeRow(gridY)
     end
 end
 
-function Board:isMatchPossible()
-    local tilesCopy = self.tiles
+function Board:matchesPossible()
+    local tempBoard = Board(self.level)
+    tempBoard.tiles = copy(self.tiles)
+    
+    local totalMatches = 0
+    local tempTile = nil
+
 
     for y = 1,7 do
         for x = 1, 7 do
             
             --horizontal swap
-            local tempTile = tilesCopy[y][x]
-            tilesCopy[y][x] = tilesCopy[y][x+1]
-            tilesCopy[y][x+1] = tempTile
-            tilesCopy:calculateMatches()
-            if #tilesCopy.matches > 0 then
-                return true
-            else
-                tilesCopy = self.tiles
-            end
+            tempTile = tempBoard.tiles[y][x]
+            tempBoard.tiles[y][x] = tempBoard.tiles[y][x+1]
+            tempBoard.tiles[y][x+1] = tempBoard.tiles
+
+            tempBoard:calculateMatches()
+            totalMatches = totalMatches + #tempBoard.matches
+            tempBoard.tiles = copy(self.tiles)
+            
 
             --vertical swap
-            local tempTile = tilesCopy[y][x]
-            tilesCopy[y][x] = tilesCopy[y+1][x]
-            tilesCopy[y+1][x] = tempTile
-            tilesCopy:calculateMatches()
-            if #tilesCopy.matches > 0 then
-                return true
-            else
-                tilesCopy = self.tiles
-            end
+            tempTile = tempBoard.tiles[y][x]
+            tempBoard.tiles[y][x] = tempBoard.tiles[y+1][x]
+            tempBoard.tiles[y+1][x] = tempTile
+
+            tempBoard:calculateMatches()
+            totalMatches = totalMatches + #tempBoard.matches
+            tempBoard.tiles = copy(self.tiles)
         end
     end
-    return false
-end
-
-function Board:resetBoard()
-    while not self:isMatchPossible() do
-        self:initializeTiles(self.level)
-    end
+    
+    return totalMatches
+    --TODO FIX
 end

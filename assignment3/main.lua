@@ -55,7 +55,7 @@ function love.load()
     -- initialize our virtual resolution
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         vsync = false,
-        fullscreen = false,
+        fullscreen = true,
         resizable = true,
         canvas = true
     })

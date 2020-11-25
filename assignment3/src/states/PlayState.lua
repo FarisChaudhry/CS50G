@@ -63,9 +63,14 @@ function PlayState:enter(params)
     self.level = params.level
 
     -- spawn a board and place it toward the right
-    self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16, self.level)
-    self.board:resetBoard()
-  
+    self.board = params.board or Board(self.level, VIRTUAL_WIDTH - 272, 16)
+    
+    self.possibleMatchNum = self.board:matchesPossible()
+    while self.possibleMatchNum == 0  do
+        self.board = Board(self.level, VIRTUAL_WIDTH - 272, 16)
+        self.possibleMatchNum = self.board:matchesPossible()
+    end
+    
     -- grab score from params if it was passed
     self.score = params.score or 0
 
@@ -136,15 +141,17 @@ function PlayState:update(dt)
                 self:inputLogic()
             end
         elseif inputMode == 'mouse' then
-            if 240 <= self.currentMouseX and self.currentMouseX <= VIRTUAL_WIDTH - 16 and 16 <= self.currentMouseY and self.currentMouseY <= VIRTUAL_HEIGHT - 16 then
-                self.boardHighlightY = math.floor((self.currentMouseY - 16) / 32)
-                self.boardHighlightX = math.floor((self.currentMouseX - 240) / 32)
+            if self.currentMouseX then
+                if 240 <= self.currentMouseX and self.currentMouseX <= VIRTUAL_WIDTH - 16 and 16 <= self.currentMouseY and self.currentMouseY <= VIRTUAL_HEIGHT - 16 then
+                    self.boardHighlightY = math.floor((self.currentMouseY - 16) / 32)
+                    self.boardHighlightX = math.floor((self.currentMouseX - 240) / 32)
 
-                if love.mouse.wasPressed(1) then
-                    self:inputLogic()
+                    if love.mouse.wasPressed(1) then
+                        self:inputLogic()
+                    end
+                else
+                    self.boardHighlightX, self.boardHighlightY = nil,nil
                 end
-            else
-                self.boardHighlightX, self.boardHighlightY = nil,nil
             end
         end
     end
@@ -247,7 +254,11 @@ function PlayState:calculateMatches(isFirstPass,x,y,newTile)
             gSounds['error']:play()
             self:undoSwap(x,y,newTile)
         else
-            self.board:resetBoard()
+            self.possibleMatchNum = self.board:matchesPossible()
+            while self.possibleMatchNum == 0  do
+                self.board = Board(self.level, VIRTUAL_WIDTH - 272, 16)
+                self.possibleMatchNum = self.board:matchesPossible()
+            end
         end
 
         self.canInput = true
@@ -316,6 +327,7 @@ function PlayState:render()
     -- GUI text
     love.graphics.setColor(56, 56, 56, 234)
     love.graphics.rectangle('fill', 16, 16, 186, 116, 4)
+    love.graphics.rectangle('fill', 16, VIRTUAL_HEIGHT-48, 186,32,4)
 
     love.graphics.setColor(99, 155, 255, 255)
     love.graphics.setFont(gFonts['medium'])
@@ -323,4 +335,5 @@ function PlayState:render()
     love.graphics.printf('Score: ' .. tostring(self.score), 20, 52, 182, 'center')
     love.graphics.printf('Goal : ' .. tostring(self.scoreGoal), 20, 80, 182, 'center')
     love.graphics.printf('Timer: ' .. tostring(self.timer), 20, 108, 182, 'center')
+    love.graphics.printf('Possible Matches ' .. tostring(self.possibleMatchNum), -15, VIRTUAL_HEIGHT - 40, 250, 'center')
 end
