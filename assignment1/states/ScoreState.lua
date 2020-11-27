@@ -16,9 +16,9 @@ local bronzemedal = love.graphics.newImage('bronzemedal.png')
 local emptymedal = love.graphics.newImage('emptymedal.png')
 
 --Medal score thresholds
-BRONZE_SCORE = 1
-SILVER_SCORE = 2
-GOLD_SCORE = 3
+BRONZE_SCORE = 5
+SILVER_SCORE = 10
+GOLD_SCORE = 20
 
 --[[
     When we enter the score state, we expect to receive the score

@@ -344,5 +344,4 @@ function Board:matchesPossible()
     end
 
     return totalMatches
-    --TODO FIX
 end

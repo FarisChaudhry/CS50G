@@ -13,12 +13,12 @@
   - [x] procedural pipe peneration
   - [x] skybox collision
 
-- Assignment 2 - Breakout ([Video](https://www.youtube.com/watch?v=ZYPjQrHvKHY))
+- Assignment 2 - Breakout ([Video](https://youtu.be/ZYPjQrHvKHY))
   - [x] powerups
   - [x] resize paddle
   - [x] keybrick and key powerup
 
-- Assignment 3 - Match 3 (IN PROGRESS)
+- Assignment 3 - Match 3 ([Video](https://youtu.be/iUD5B81MzdA))
   - [x] timer increment
   - [x] mouse support
   - [x] tile progression
