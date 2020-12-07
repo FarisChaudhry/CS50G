@@ -25,3 +25,9 @@
   - [x] one-move matches
   - [x] reset board
   - [x] shiny tiles
+
+- Assignment 4 - Mario (WIP)
+  - [x] spawn on solid ground
+  - [ ] key and lock block
+  - [ ] level end
+  - [ ] multiple levels

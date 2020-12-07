@@ -66,6 +66,11 @@ function PlayState:render()
     love.graphics.draw(gTextures['backgrounds'], gFrames['backgrounds'][self.background], math.floor(-self.backgroundX + 256),
         gTextures['backgrounds']:getHeight() / 3 * 2, 0, 1, -1)
     
+    --! testing only
+    if self.player.x ~= nil then
+        love.graphics.print(math.floor(self.player.x/16),0,VIRTUAL_HEIGHT/2)
+    end
+
     -- translate the entire view of the scene to emulate a camera
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
     
