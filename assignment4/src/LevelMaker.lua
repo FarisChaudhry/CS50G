@@ -25,7 +25,7 @@ function LevelMaker.generate(width, height)
     -- if key and keyblock have already been spawned
     local keySpawned = false
     local keyblockSpawned = false
-    local keyColour = math.random(3)
+    local keyColour = math.random(#KEYS)
 
     -- insert blank tables into tiles for later access
     for x = 1, height do
@@ -98,8 +98,9 @@ function LevelMaker.generate(width, height)
                 )
             end
 
-            -- spawn key chance if atleast 33% through the level
-            if x >= math.floor(width/3) and not keySpawned and (math.random(33) == 1 or x == math.floor(2*width/3)) then
+            -- chance to spawn key if atleast 33% through the level
+            --if x >= math.floor(width/3) and not keySpawned and (math.random(33) == 1 or x == math.floor(2*width/3)) then
+            if x == 3 then
                 table.insert(objects,
                     GameObject {
                         texture = 'keys_and_locks',
@@ -108,14 +109,20 @@ function LevelMaker.generate(width, height)
                         width = 16,
                         height = 16,
                         frame = keyColour,
-                        collidable = true
+                        collidable = true,
+                        solid = false,
+                        consumable = true,
+
+                        onConsume = function(player, object)
+                            gSounds['pickup']:play()
+                            player.keyPickedUp = true
+                        end
                     }
                 )
                 keySpawned = true
 
             --elseif x >= math.floor(13*width/5) and not keyblockSpawned and (math.random(33) == 1  or x == math.floor(9*width/10)) then
-            --todo keyblock not spawning
-            elseif x == 0 then
+            elseif x == 5 then
                 table.insert(objects,
                     GameObject {
                         texture = 'keys_and_locks',
@@ -123,10 +130,17 @@ function LevelMaker.generate(width, height)
                         y = (blockHeight - 1) * TILE_SIZE,
                         width = 16,
                         height = 16,
-                        frame = keyColour + 1,
+                        frame = keyColour + 4,
                         collidable = true,
                         hit = false,
-                        solid = true
+                        solid = true,
+
+                        onCollide = function(player, object)
+                            if player.keyPickedUp and not object.hit then
+                                player.keyblockHit = true
+                                object.hit = true
+                            end
+                        end
                     }
                 )
 
@@ -148,10 +162,11 @@ function LevelMaker.generate(width, height)
                         solid = true,
 
                         -- collision function takes itself
-                        onCollide = function(obj)
+                        onCollide = function(object)
 
                             -- spawn a gem if we haven't already hit the block
-                            if not obj.hit then
+                            if not object.hit then
+                                object.hit = true
 
                                 -- chance to spawn gem, not guaranteed
                                 if math.random(4) == 1 then
@@ -183,8 +198,6 @@ function LevelMaker.generate(width, height)
 
                                     table.insert(objects, gem)
                                 end
-
-                                obj.hit = true
                             end
 
                             gSounds['empty-block']:play()

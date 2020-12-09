@@ -30,4 +30,4 @@
   - [x] spawn on solid ground
   - [ ] key and lock block
   - [ ] level end
-  - [ ] multiple levels
+  - [ ] multiple (longer) levels

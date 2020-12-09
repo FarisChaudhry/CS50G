@@ -37,6 +37,22 @@ function PlayState:init()
     self.player:changeState('falling')
 end
 
+function PlayState:enter()
+    self.camX = 0
+    self.camY = 0
+    self.level = LevelMaker.generate(100, 10)
+    self.tileMap = self.level.tileMap
+    self.background = math.random(3)
+    self.backgroundX = 0
+
+    --reset player variables
+    self.player.keyPickedUp = false
+    self.player.x = 0
+    self.player.y = 0
+    self.player.map = self.tileMap
+    self.player.level = self.level
+end
+
 function PlayState:update(dt)
     Timer.update(dt)
 
@@ -69,6 +85,8 @@ function PlayState:render()
     --! testing only
     if self.player.x ~= nil then
         love.graphics.print(math.floor(self.player.x/16),0,VIRTUAL_HEIGHT/2)
+        love.graphics.print(tostring(self.player.keyPickedUp),0,VIRTUAL_HEIGHT/4)
+        love.graphics.print(tostring(self.player.keyblockHit),0,VIRTUAL_HEIGHT/3)
     end
 
     -- translate the entire view of the scene to emulate a camera
