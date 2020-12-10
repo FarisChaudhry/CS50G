@@ -90,6 +90,14 @@ KEYS = {
     1, 2, 3, 4
 }
 
+FLAG_POLES = {
+    1, 2, 3, 4, 5, 6
+}
+
+FLAGS = {
+    1, 2, 3, 4
+}
+
 JUMP_BLOCKS = {}
 
 for i = 1, 30 do

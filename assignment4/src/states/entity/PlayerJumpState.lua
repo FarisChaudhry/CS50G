@@ -60,6 +60,9 @@ function PlayerJumpState:update(dt)
         if object:collides(self.player) then
             if object.solid then
                 object.onCollide(self.player, object)
+                if object.removed then
+                    table.remove(self.player.level.objects, k)
+                end
 
                 self.player.y = object.y + object.height
                 self.player.dy = 0

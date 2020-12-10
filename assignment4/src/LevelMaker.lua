@@ -35,6 +35,15 @@ function LevelMaker.generate(width, height)
     -- column by column generation instead of row; sometimes better for platformers
     for x = 1, width do
         local tileID = TILE_ID_EMPTY
+        --if x >= math.floor(width/3) and not keySpawned and (math.random(33) == 1 or x == math.floor(2*width/3)) then
+        if x == 3 then
+            keySpawnCheck = true
+        --elseif x >= math.floor(7*width/10) and not keyblockSpawned and (math.random(33) == 1  or x == math.floor(17*width/20)) then
+        elseif x == 5 then
+            tileSpawnCheck = true
+        else
+            keySpawnCheck, tileSpawnCheck = false
+        end
 
         -- lay out the empty space
         for y = 1, 6 do
@@ -43,7 +52,7 @@ function LevelMaker.generate(width, height)
         end
 
         -- chance to just be emptiness
-        if math.random(7) == 1 and x ~= 1 then
+        if math.random(7) == 1 and x ~= 1 and (x < width-3) and not (keySpawnCheck or tileSpawnCheck) then
             for y = 7, height do
                 table.insert(tiles[y],
                     Tile(x, y, tileID, nil, tileset, topperset))
@@ -59,7 +68,7 @@ function LevelMaker.generate(width, height)
             end
 
             -- chance to generate a pillar
-            if math.random(8) == 1 then
+            if math.random(8) == 1 and x < width - 3 then
                 blockHeight = 2
 
                 -- chance to generate bush on pillar
@@ -84,7 +93,7 @@ function LevelMaker.generate(width, height)
                 tiles[7][x].topper = nil
 
             -- chance to generate bushes
-            elseif math.random(8) == 1 then
+            elseif math.random(8) == 1 and (x < width-3) then
                 table.insert(objects,
                     GameObject {
                         texture = 'bushes',
@@ -99,8 +108,8 @@ function LevelMaker.generate(width, height)
             end
 
             -- chance to spawn key if atleast 33% through the level
-            --if x >= math.floor(width/3) and not keySpawned and (math.random(33) == 1 or x == math.floor(2*width/3)) then
-            if x == 3 then
+            
+            if keySpawnCheck then
                 table.insert(objects,
                     GameObject {
                         texture = 'keys_and_locks',
@@ -121,8 +130,8 @@ function LevelMaker.generate(width, height)
                 )
                 keySpawned = true
 
-            --elseif x >= math.floor(13*width/5) and not keyblockSpawned and (math.random(33) == 1  or x == math.floor(9*width/10)) then
-            elseif x == 5 then
+            
+            elseif tileSpawnCheck then
                 table.insert(objects,
                     GameObject {
                         texture = 'keys_and_locks',
@@ -134,18 +143,52 @@ function LevelMaker.generate(width, height)
                         collidable = true,
                         hit = false,
                         solid = true,
+                        consumable = true,
+                        removed = false,
 
                         onCollide = function(player, object)
                             if player.keyPickedUp and not object.hit then
                                 player.keyblockHit = true
-                                object.hit = true
+                                object.removed = true
+                                gSounds['powerup-reveal']:play()
+                                
+                                table.insert(objects,
+                                    GameObject{
+                                        texture = 'flags',
+                                        x = (x - 3) * TILE_SIZE,
+                                        y = (blockHeight - 1) * TILE_SIZE,
+                                        width = 16,
+                                        height = 48,
+                                        frame = math.random(#FLAG_POLES),
+                                        collidable = true,
+                                        solid = true,
+
+                                        onCollide = function(player,object)
+                                            
+                                        end
+                                    }
+                                )
+
+                                table.insert(objects,
+                                    GameObject{
+                                        texture = 'flags',
+                                        x = (x - 3) * TILE_SIZE + 8,
+                                        y = (blockHeight - 1) * TILE_SIZE + 6,
+                                        width = 16,
+                                        height = 16,
+                                        frame = math.random(#FLAGS) * 3 + 4
+                                    }
+                                )
+                            else
+                                gSounds['empty-block']:play()
                             end
                         end
                     }
                 )
+                keyblockSpawned = true
 
             -- chance to spawn a block
-            elseif math.random(10) == 1 then
+            elseif math.random(10) == 1 and (x < width - 3) and (x > 2)then
                 table.insert(objects,
                     -- jump block
                     GameObject {
