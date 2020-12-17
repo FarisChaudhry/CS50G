@@ -15,6 +15,7 @@ function Player:init(def)
     self.score = 0
     self.keyPickedUp = false
     self.keyblockHit = false
+    self.levelWidth = 100
 end
 
 function Player:update(dt)

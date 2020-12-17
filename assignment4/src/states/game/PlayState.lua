@@ -31,16 +31,21 @@ function PlayState:init()
         map = self.tileMap,
         level = self.level
     })
-
+    
     self:spawnEnemies()
 
     self.player:changeState('falling')
 end
 
-function PlayState:enter()
+function PlayState:enter(params)
+    if params then
+        self.player.score = params.score
+        self.player.levelWidth = params.width
+    end
+
     self.camX = 0
     self.camY = 0
-    self.level = LevelMaker.generate(100, 10)
+    self.level = LevelMaker.generate(self.player.levelWidth, 10)
     self.tileMap = self.level.tileMap
     self.background = math.random(3)
     self.backgroundX = 0
@@ -120,6 +125,7 @@ end
     Adds a series of enemies to the level randomly.
 ]]
 function PlayState:spawnEnemies()
+    -- ! snails not spawning
     -- spawn snails in the level
     for x = 1, self.tileMap.width do
 

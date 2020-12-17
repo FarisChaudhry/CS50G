@@ -28,6 +28,6 @@
 
 - Assignment 4 - Mario (WIP)
   - [x] spawn on solid ground
-  - [ ] key and lock block
-  - [ ] level end
-  - [ ] multiple (longer) levels
+  - [x] key and lock block
+  - [x] level end
+  - [x] multiple (longer) levels
