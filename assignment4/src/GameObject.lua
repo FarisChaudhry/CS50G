@@ -22,6 +22,7 @@ function GameObject:init(def)
     self.onConsume = def.onConsume
     self.hit = def.hit
     self.removed = def.removed
+    self.type = def.type
 end
 
 function GameObject:collides(target)

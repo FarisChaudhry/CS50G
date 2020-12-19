@@ -20,7 +20,7 @@ function PlayState:init()
 
     self.player = Player({
         x = 0, y = 0,
-        width = 16, height = 20,
+        width = 15, height = 20,
         texture = 'green-alien',
         stateMachine = StateMachine {
             ['idle'] = function() return PlayerIdleState(self.player) end,
@@ -31,7 +31,7 @@ function PlayState:init()
         map = self.tileMap,
         level = self.level
     })
-    
+
     self:spawnEnemies()
 
     self.player:changeState('falling')
@@ -86,7 +86,7 @@ function PlayState:render()
     love.graphics.draw(gTextures['backgrounds'], gFrames['backgrounds'][self.background], math.floor(-self.backgroundX + 256), 0)
     love.graphics.draw(gTextures['backgrounds'], gFrames['backgrounds'][self.background], math.floor(-self.backgroundX + 256),
         gTextures['backgrounds']:getHeight() / 3 * 2, 0, 1, -1)
-    
+
     --! testing only
     if self.player.x ~= nil then
         love.graphics.print(math.floor(self.player.x/16),0,VIRTUAL_HEIGHT/2)
@@ -96,12 +96,12 @@ function PlayState:render()
 
     -- translate the entire view of the scene to emulate a camera
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
-    
+
     self.level:render()
 
     self.player:render()
     love.graphics.pop()
-    
+
     -- render score
     love.graphics.setFont(gFonts['medium'])
     love.graphics.setColor(0, 0, 0, 255)
@@ -139,7 +139,7 @@ function PlayState:spawnEnemies()
 
                     -- random chance, 1 in 10
                     if math.random(10) == 1 then
-                        
+
                         -- instantiate snail, declaring in advance so we can pass it into state machine
                         local snail
                         snail = Snail {

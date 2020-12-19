@@ -36,19 +36,17 @@ end
 
 function GenerateFlagQuads(atlas)
     local sheetWidth = atlas:getWidth()
-    local sheetHeight = atlas:getHeight() 
+    local sheetHeight = atlas:getHeight()
 
     local sheetCounter = 1
     local spritesheet = {}
 
-    local y = 0
-    local x = 0
-
-    for i = 0, 5 do 
-        spritesheet[sheetCounter] = 
-        love.graphics.newQuad(x,y,16,48,atlas:getDimensions())
-        sheetCounter = sheetCounter + 1
-        x = x + 16
+    for x = 0,5 do
+        for y = 0,2 do
+            spritesheet[sheetCounter] =
+            love.graphics.newQuad(x*16,y*16,16,16,atlas:getDimensions())
+            sheetCounter = sheetCounter + 1
+        end
     end
 
     for y = 0, 3 do
@@ -58,7 +56,7 @@ function GenerateFlagQuads(atlas)
             sheetCounter = sheetCounter + 1
         end
     end
-        
+
     return spritesheet
 end
 
@@ -74,7 +72,7 @@ function GenerateTileSets(quads, setsX, setsY, sizeX, sizeY)
     -- for each tile set on the X and Y
     for tilesetY = 1, setsY do
         for tilesetX = 1, setsX do
-            
+
             -- tileset table
             table.insert(tilesets, {})
             tableCounter = tableCounter + 1

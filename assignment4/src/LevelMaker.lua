@@ -15,6 +15,7 @@ function LevelMaker.generate(width, height)
     local entities = {}
     local objects = {}
     local consecutiveGaps = 0
+    local levelEnd = false
 
     local tileID = TILE_ID_GROUND
 
@@ -80,6 +81,7 @@ function LevelMaker.generate(width, height)
                             y = (4 - 1) * TILE_SIZE,
                             width = 16,
                             height = 16,
+                            type = 'bush',
 
                             -- select random frame from bush_ids whitelist, then random row for variance
                             frame = BUSH_IDS[math.random(#BUSH_IDS)] + (math.random(4) - 1) * 7
@@ -102,6 +104,7 @@ function LevelMaker.generate(width, height)
                         width = 16,
                         height = 16,
                         frame = BUSH_IDS[math.random(#BUSH_IDS)] + (math.random(4) - 1) * 7,
+                        type = 'bush',
                         collidable = false
                     }
                 )
@@ -122,6 +125,7 @@ function LevelMaker.generate(width, height)
                         collidable = true,
                         solid = false,
                         consumable = true,
+                        type = 'key',
 
                         onConsume = function(player, object)
                             gSounds['pickup']:play()
@@ -131,7 +135,7 @@ function LevelMaker.generate(width, height)
                 )
                 keySpawned = true
 
-            
+            -- chance to spawn block if between 60% and 90% through level and key has been spawned
             elseif tileSpawnCheck then
                 table.insert(objects,
                     GameObject {
@@ -146,23 +150,75 @@ function LevelMaker.generate(width, height)
                         solid = true,
                         consumable = true,
                         removed = false,
+                        type = 'keyblock',
 
+                        -- on hitting the keyblock spawn the end flag
                         onCollide = function(player, object)
                             if player.keyPickedUp and not object.hit then
                                 player.keyblockHit = true
                                 object.removed = true
                                 gSounds['powerup-reveal']:play()
-                                
+
+                                -- random flag pole and flag colour
+                                local flagPoleType = math.random(#FLAG_POLES) * 3 - 2
+                                local flagType = math.random(#FLAGS) * 3 + 16
+
+
+                                -- spawn flag segments
+                                --top segment
                                 table.insert(objects,
                                     GameObject{
                                         texture = 'flags',
                                         x = (width - 3) * TILE_SIZE,
-                                        y = (blockHeight - 1) * TILE_SIZE,
+                                        y = 3 * TILE_SIZE,
                                         width = 16,
-                                        height = 48,
-                                        frame = math.random(#FLAG_POLES),
+                                        height = 16,
+                                        frame = flagPoleType,
                                         collidable = true,
-                                        solid = true,
+                                        solid = false,
+                                        type = 'flagpole',
+
+                                        onCollide = function(player,object)
+                                            gStateMachine:change('play',{
+                                                score = player.score,
+                                                width = player.levelWidth + 20
+                                            })
+                                        end
+                                    }
+                                )
+                                --middle segment
+                                table.insert(objects,
+                                    GameObject{
+                                        texture = 'flags',
+                                        x = (width - 3) * TILE_SIZE,
+                                        y = 4 * TILE_SIZE,
+                                        width = 16,
+                                        height = 16,
+                                        frame = flagPoleType + 1,
+                                        collidable = true,
+                                        solid = false,
+                                        type = 'flagpole',
+
+                                        onCollide = function(player,object)
+                                            gStateMachine:change('play',{
+                                                score = player.score,
+                                                width = player.levelWidth + 20
+                                            })
+                                        end
+                                    }
+                                )
+                                --bottom segment
+                                table.insert(objects,
+                                    GameObject{
+                                        texture = 'flags',
+                                        x = (width - 3) * TILE_SIZE,
+                                        y = 5 * TILE_SIZE,
+                                        width = 16,
+                                        height = 16,
+                                        frame = flagPoleType + 2,
+                                        collidable = true,
+                                        solid = false,
+                                        type = 'flagpole',
 
                                         onCollide = function(player,object)
                                             gStateMachine:change('play',{
@@ -173,21 +229,16 @@ function LevelMaker.generate(width, height)
                                     }
                                 )
 
+                                -- spawn flag
                                 table.insert(objects,
                                     GameObject{
                                         texture = 'flags',
                                         x = (width - 3) * TILE_SIZE + 8,
-                                        y = (blockHeight - 1) * TILE_SIZE + 6,
+                                        y = 3 * TILE_SIZE + 6,
                                         width = 16,
                                         height = 16,
-                                        frame = math.random(#FLAGS) * 3 + 4,
-
-                                        onCollide = function(player,object)
-                                            gStateMachine:change('play',{
-                                                score = player.score,
-                                                width = player.levelWidth + 20
-                                            })
-                                        end
+                                        frame = flagType,
+                                        type = 'flag'
                                     }
                                 )
                             else
@@ -215,6 +266,7 @@ function LevelMaker.generate(width, height)
                             collidable = true,
                             hit = false,
                             solid = true,
+                            type = 'block',
 
                             -- collision function takes itself
                             onCollide = function(object)
@@ -237,6 +289,7 @@ function LevelMaker.generate(width, height)
                                             collidable = true,
                                             consumable = true,
                                             solid = false,
+                                            type = 'gem',
 
                                             -- gem has its own function to add to the player's score
                                             onConsume = function(player, object)
