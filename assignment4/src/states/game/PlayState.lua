@@ -8,18 +8,10 @@
 PlayState = Class{__includes = BaseState}
 
 function PlayState:init()
-    self.camX = 0
-    self.camY = 0
-    self.level = LevelMaker.generate(100, 10)
-    self.tileMap = self.level.tileMap
-    self.background = math.random(3)
-    self.backgroundX = 0
-
     self.gravityOn = true
     self.gravityAmount = 6
 
     self.player = Player({
-        x = 0, y = 0,
         width = 15, height = 20,
         texture = 'green-alien',
         stateMachine = StateMachine {
@@ -27,12 +19,10 @@ function PlayState:init()
             ['walking'] = function() return PlayerWalkingState(self.player) end,
             ['jump'] = function() return PlayerJumpState(self.player, self.gravityAmount) end,
             ['falling'] = function() return PlayerFallingState(self.player, self.gravityAmount) end
-        },
-        map = self.tileMap,
-        level = self.level
+        }
     })
 
-    self:spawnEnemies()
+    
 
     self.player:changeState('falling')
 end
@@ -43,6 +33,7 @@ function PlayState:enter(params)
         self.player.levelWidth = params.width
     end
 
+    -- reset game variables
     self.camX = 0
     self.camY = 0
     self.level = LevelMaker.generate(self.player.levelWidth, 10)
@@ -50,7 +41,10 @@ function PlayState:enter(params)
     self.background = math.random(3)
     self.backgroundX = 0
 
-    --reset player variables
+    --spawn enemies after generation
+    self:spawnEnemies()
+
+    -- reset player variables
     self.player.keyPickedUp = false
     self.player.x = 0
     self.player.y = 0
@@ -87,13 +81,6 @@ function PlayState:render()
     love.graphics.draw(gTextures['backgrounds'], gFrames['backgrounds'][self.background], math.floor(-self.backgroundX + 256),
         gTextures['backgrounds']:getHeight() / 3 * 2, 0, 1, -1)
 
-    --! testing only
-    if self.player.x ~= nil then
-        love.graphics.print(math.floor(self.player.x/16),0,VIRTUAL_HEIGHT/2)
-        love.graphics.print(tostring(self.player.keyPickedUp),0,VIRTUAL_HEIGHT/4)
-        love.graphics.print(tostring(self.player.keyblockHit),0,VIRTUAL_HEIGHT/3)
-    end
-
     -- translate the entire view of the scene to emulate a camera
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
 
@@ -125,7 +112,6 @@ end
     Adds a series of enemies to the level randomly.
 ]]
 function PlayState:spawnEnemies()
-    -- ! snails not spawning
     -- spawn snails in the level
     for x = 1, self.tileMap.width do
 

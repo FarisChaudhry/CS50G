@@ -52,7 +52,7 @@ function LevelMaker.generate(width, height)
         end
 
         -- chance to just be emptiness
-        if math.random(7) == 1 and x ~= 1 and (x < width-3) and not (keySpawnCheck or tileSpawnCheck) and (consecutiveGaps < 3) then
+        if math.random(7) == 1 and x ~= 1 and (x < width-3) and not (keySpawnCheck or tileSpawnCheck) and (consecutiveGaps < 2) then
             consecutiveGaps = consecutiveGaps + 1
             for y = 7, height do
                 table.insert(tiles[y],
@@ -239,6 +239,8 @@ function LevelMaker.generate(width, height)
                                         height = 16,
                                         frame = flagType,
                                         type = 'flag'
+
+                                        --TODO alternating flag animation
                                     }
                                 )
                             else
