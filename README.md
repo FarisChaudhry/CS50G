@@ -1,33 +1,24 @@
 
 # GD50
 
- Assignments for GD50
- Introduction to Game Development
+ Assignments for GD50: Introduction to Game Development
 
-- Assignment 0 - Pong ([Video](https://youtu.be/Pl4XFRx5gYs))
-  - [x] paddle ai
+- Assignment 0 - Pong
+  - [Video](https://youtu.be/Pl4XFRx5gYs)
+  - [Spec](https://docs.cs50.net/games/2020/x/assignments/0/assignment0.html)
 
-- Assignment 1 - Flappy Bird ([Video](https://youtu.be/WxNL9tlGBVQ))
-  - [x] pause
-  - [x] medals
-  - [x] procedural pipe peneration
-  - [x] skybox collision
+- Assignment 1 - Flappy Bird
+  - [Video](https://youtu.be/WxNL9tlGBVQ)
+  - [Spec](https://docs.cs50.net/games/2020/x/assignments/1/assignment1.html)
 
-- Assignment 2 - Breakout ([Video](https://youtu.be/ZYPjQrHvKHY))
-  - [x] powerups
-  - [x] resize paddle
-  - [x] keybrick and key powerup
+- Assignment 2 - Breakout
+  - [Video](https://youtu.be/ZYPjQrHvKHY)
+  - [Spec](https://docs.cs50.net/games/2020/x/assignments/2/assignment2.html)
 
-- Assignment 3 - Match 3 ([Video](https://youtu.be/iUD5B81MzdA))
-  - [x] timer increment
-  - [x] mouse support
-  - [x] tile progression
-  - [x] one-move matches
-  - [x] reset board
-  - [x] shiny tiles
+- Assignment 3 - Match 3
+  - [Video](https://youtu.be/iUD5B81MzdA)
+  - [Spec](https://docs.cs50.net/games/2020/x/assignments/3/assignment3.html)
 
-- Assignment 4 - Mario (WIP)
-  - [x] spawn on solid ground
-  - [x] key and lock block
-  - [x] level end
-  - [x] multiple (longer) levels
+- Assignment 4 - Mario
+  - [Video WIP]
+  - [Spec](https://docs.cs50.net/games/2020/x/assignments/4/assignment4.html)
