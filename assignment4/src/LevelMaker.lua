@@ -37,12 +37,13 @@ function LevelMaker.generate(width, height)
     -- column by column generation instead of row; sometimes better for platformers
     for x = 1, width do
         local tileID = TILE_ID_EMPTY
+
         if x >= math.floor(width/3) and not keySpawned and (math.random(33) == 1 or x == math.floor(2*width/3)) then
             keySpawnCheck = true
         elseif x >= math.floor(7*width/10) and not keyblockSpawned and (math.random(33) == 1  or x == math.floor(17*width/20)) then
             tileSpawnCheck = true
         else
-            keySpawnCheck, tileSpawnCheck = false
+            keySpawnCheck, tileSpawnCheck = false, false
         end
 
         -- lay out the empty space
@@ -111,6 +112,7 @@ function LevelMaker.generate(width, height)
             end
 
             consecutiveGaps = 0
+            -- chance to spawn different block types
 
             -- chance to spawn key if atleast 33% through the level
             if keySpawnCheck then
@@ -127,7 +129,7 @@ function LevelMaker.generate(width, height)
                         consumable = true,
                         type = 'key',
 
-                        onConsume = function(player, object)
+                        onConsume = function(player,object)
                             gSounds['pickup']:play()
                             player.keyPickedUp = true
                         end
@@ -178,7 +180,7 @@ function LevelMaker.generate(width, height)
                                         solid = false,
                                         type = 'flagpole',
 
-                                        onCollide = function(player,object)
+                                        onCollide = function(player, object)
                                             gStateMachine:change('play',{
                                                 score = player.score,
                                                 width = player.levelWidth + 20
@@ -199,7 +201,7 @@ function LevelMaker.generate(width, height)
                                         solid = false,
                                         type = 'flagpole',
 
-                                        onCollide = function(player,object)
+                                        onCollide = function(player, object)
                                             gStateMachine:change('play',{
                                                 score = player.score,
                                                 width = player.levelWidth + 20
@@ -220,7 +222,7 @@ function LevelMaker.generate(width, height)
                                         solid = false,
                                         type = 'flagpole',
 
-                                        onCollide = function(player,object)
+                                        onCollide = function(player, object)
                                             gStateMachine:change('play',{
                                                 score = player.score,
                                                 width = player.levelWidth + 20
@@ -230,7 +232,6 @@ function LevelMaker.generate(width, height)
                                 )
 
                                 -- spawn flag
-                                
                                 local flag = GameObject{
                                         texture = 'flags',
                                         x = (width - 3) * TILE_SIZE + 8,
@@ -267,6 +268,7 @@ function LevelMaker.generate(width, height)
             -- chance to spawn a block
             elseif math.random(10) == 1 and (x < width - 3) and (x > 2)then
                 table.insert(objects,
+                
                     -- jump block
                     GameObject {
                         texture = 'jump-blocks',
@@ -283,11 +285,11 @@ function LevelMaker.generate(width, height)
                         type = 'block',
 
                         -- collision function takes itself
-                        onCollide = function(object)
+                        onCollide = function(player, object)
 
                             -- spawn a gem if we haven't already hit the block
                             if not object.hit then
-                                object.hit = true
+                                
 
                                 -- chance to spawn gem, not guaranteed
                                 if math.random(1) == 1 then
@@ -320,7 +322,10 @@ function LevelMaker.generate(width, height)
                                     gSounds['powerup-reveal']:play()
 
                                     table.insert(objects, gem)
+                                    temp_gem = gem
                                 end
+
+                                object.hit = true
                             end
 
                             gSounds['empty-block']:play()

@@ -24,6 +24,3 @@
   - [Spec](https://docs.cs50.net/games/2020/x/assignments/4/assignment4.html)
 
 ## TODO
-
-- Fix gems spawns
-- Flag tween at end

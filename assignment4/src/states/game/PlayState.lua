@@ -96,6 +96,8 @@ function PlayState:render()
     self.player:render()
     love.graphics.pop()
 
+    love.graphics.print(tostring(temp_gem), 100, 100)
+
     -- render score
     love.graphics.setFont(gFonts['medium'])
     love.graphics.setColor(0, 0, 0, 255)
