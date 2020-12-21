@@ -230,19 +230,32 @@ function LevelMaker.generate(width, height)
                                 )
 
                                 -- spawn flag
-                                table.insert(objects,
-                                    GameObject{
+                                
+                                local flag = GameObject{
                                         texture = 'flags',
                                         x = (width - 3) * TILE_SIZE + 8,
                                         y = 3 * TILE_SIZE + 6,
                                         width = 16,
                                         height = 16,
                                         frame = flagType,
-                                        type = 'flag'
+                                        type = 'flag',
+                                        animated = true,
 
-                                        --TODO alternating flag animation
-                                    }
-                                )
+                                        animation = Animation {
+                                            frames = {flagType, flagType + 1},
+                                            interval = 0.35
+                                        },
+
+                                        animate = function(object, dt)
+                                            if not levelEnd then 
+                                                object.animation:update(dt)
+                                                object.frame = object.animation:getCurrentFrame()
+                                            else
+                                                object.frame = flagType + 2 
+                                            end
+                                        end
+                                }
+                                table.insert(objects, flag)
                             else
                                 gSounds['empty-block']:play()
                             end
@@ -252,69 +265,68 @@ function LevelMaker.generate(width, height)
                 keyblockSpawned = true
 
             -- chance to spawn a block
-            else
-                if math.random(10) == 1 and (x < width - 3) and (x > 2)then
-                    table.insert(objects,
-                        -- jump block
-                        GameObject {
-                            texture = 'jump-blocks',
-                            x = (x - 1) * TILE_SIZE,
-                            y = (blockHeight - 1) * TILE_SIZE,
-                            width = 16,
-                            height = 16,
+            elseif math.random(10) == 1 and (x < width - 3) and (x > 2)then
+                table.insert(objects,
+                    -- jump block
+                    GameObject {
+                        texture = 'jump-blocks',
+                        x = (x - 1) * TILE_SIZE,
+                        y = (blockHeight - 1) * TILE_SIZE,
+                        width = 16,
+                        height = 16,
 
-                            -- make it a random variant
-                            frame = math.random(#JUMP_BLOCKS),
-                            collidable = true,
-                            hit = false,
-                            solid = true,
-                            type = 'block',
+                        -- make it a random variant
+                        frame = math.random(#JUMP_BLOCKS),
+                        collidable = true,
+                        hit = false,
+                        solid = true,
+                        type = 'block',
 
-                            -- collision function takes itself
-                            onCollide = function(object)
+                        -- collision function takes itself
+                        onCollide = function(object)
 
-                                -- spawn a gem if we haven't already hit the block
-                                if not object.hit then
-                                    object.hit = true
+                            -- spawn a gem if we haven't already hit the block
+                            if not object.hit then
+                                object.hit = true
 
-                                    -- chance to spawn gem, not guaranteed
-                                    if math.random(3) == 1 then
+                                -- chance to spawn gem, not guaranteed
+                                if math.random(1) == 1 then
 
-                                        -- maintain reference so we can set it to nil
-                                        local gem = GameObject {
-                                            texture = 'gems',
-                                            x = (x - 1) * TILE_SIZE,
-                                            y = (blockHeight - 1) * TILE_SIZE - 4,
-                                            width = 16,
-                                            height = 16,
-                                            frame = math.random(#GEMS),
-                                            collidable = true,
-                                            consumable = true,
-                                            solid = false,
-                                            type = 'gem',
+                                    -- maintain reference so we can set it to nil
+                                    local gem = GameObject {
+                                        texture = 'gems',
+                                        x = (x - 1) * TILE_SIZE,
+                                        y = (blockHeight - 1) * TILE_SIZE - 4,
+                                        width = 16,
+                                        height = 16,
+                                        frame = math.random(#GEMS),
+                                        collidable = true,
+                                
+                                        consumable = true,
+                                        solid = false,
+                                        type = 'gem',
 
-                                            -- gem has its own function to add to the player's score
-                                            onConsume = function(player, object)
-                                                gSounds['pickup']:play()
-                                                player.score = player.score + 100
-                                            end
-                                        }
+                                        -- gem has its own function to add to the player's score
+                                        onConsume = function(player, object)
+                                            gSounds['pickup']:play()
+                                            player.score = player.score + 100
+                                        end
+                                    }
+                                    
+                                    -- make the gem move up from the block and play a sound
+                                    Timer.tween(0.1, {
+                                        [gem] = {y = (blockHeight - 2) * TILE_SIZE}
+                                    })
+                                    gSounds['powerup-reveal']:play()
 
-                                        -- make the gem move up from the block and play a sound
-                                        Timer.tween(0.1, {
-                                            [gem] = {y = (blockHeight - 2) * TILE_SIZE}
-                                        })
-                                        gSounds['powerup-reveal']:play()
-
-                                        table.insert(objects, gem)
-                                    end
+                                    table.insert(objects, gem)
                                 end
-
-                                gSounds['empty-block']:play()
                             end
-                        }
-                    )
-                end
+
+                            gSounds['empty-block']:play()
+                        end
+                    }
+                )
             end
         end
     end

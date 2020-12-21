@@ -12,7 +12,7 @@ function PlayState:init()
     self.gravityAmount = 6
 
     self.player = Player({
-        width = 15, height = 20,
+        width = 14, height = 20,
         texture = 'green-alien',
         stateMachine = StateMachine {
             ['idle'] = function() return PlayerIdleState(self.player) end,
@@ -61,6 +61,13 @@ function PlayState:update(dt)
     -- update player and level
     self.player:update(dt)
     self.level:update(dt)
+    
+    -- update object animations if needed
+    for k, object in pairs(self.player.level.objects) do
+        if object.animated then
+            object:animate(dt)
+        end
+    end 
 
     -- constrain player X no matter which state
     if self.player.x <= 0 then
@@ -113,7 +120,7 @@ end
 ]]
 function PlayState:spawnEnemies()
     -- spawn snails in the level
-    for x = 1, self.tileMap.width do
+    for x = 5, self.tileMap.width do
 
         -- flag for whether there's ground on this column of the level
         local groundFound = false

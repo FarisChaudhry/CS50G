@@ -23,6 +23,9 @@ function GameObject:init(def)
     self.hit = def.hit
     self.removed = def.removed
     self.type = def.type
+    self.animated = def.animated
+    self.animate = def.animate
+    self.animation = def.animation
 end
 
 function GameObject:collides(target)
