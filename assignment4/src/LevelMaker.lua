@@ -292,7 +292,7 @@ function LevelMaker.generate(width, height)
                                 
 
                                 -- chance to spawn gem, not guaranteed
-                                if math.random(1) == 1 then
+                                if math.random(4) == 1 then
 
                                     -- maintain reference so we can set it to nil
                                     local gem = GameObject {
@@ -322,7 +322,6 @@ function LevelMaker.generate(width, height)
                                     gSounds['powerup-reveal']:play()
 
                                     table.insert(objects, gem)
-                                    temp_gem = gem
                                 end
 
                                 object.hit = true
