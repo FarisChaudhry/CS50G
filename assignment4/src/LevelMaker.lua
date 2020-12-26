@@ -305,7 +305,7 @@ function LevelMaker.generate(width, height)
                                         collidable = true,
                                 
                                         consumable = true,
-                                        solid = false,
+                                        solid = false, 
                                         type = 'gem',
 
                                         -- gem has its own function to add to the player's score

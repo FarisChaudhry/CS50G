@@ -20,7 +20,7 @@
   - [Spec](https://docs.cs50.net/games/2020/x/assignments/3/assignment3.html)
 
 - Assignment 4 - Mario
-  - [Video WIP]
+  - [Video](https://youtu.be/DGqqJ3HbTHc)
   - [Spec](https://docs.cs50.net/games/2020/x/assignments/4/assignment4.html)
 
 ## TODO
