@@ -23,4 +23,8 @@
   - [Video](https://youtu.be/DGqqJ3HbTHc)
   - [Spec](https://docs.cs50.net/games/2020/x/assignments/4/assignment4.html)
 
+- Assignment 5 - Legend of Zelda
+  - [Video] WIP
+  - [Spec] To add later
+
 ## TODO
