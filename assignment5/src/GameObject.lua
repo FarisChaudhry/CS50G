@@ -21,6 +21,7 @@ function GameObject:init(def, x, y)
     -- wether object is collidable or consumable
     self.collidable = def.collidable or false
     self.consumable = def.consumable or false
+    self.interactable = def.interactable or false
 
     self.defaultState = def.defaultState
     self.state = self.defaultState
@@ -35,6 +36,7 @@ function GameObject:init(def, x, y)
     -- default empty collision callback
     self.onCollide = function() end
     self.onConsume = function() end
+    self.onInteract = function() end
 end
 
 function GameObject:update(dt)

@@ -16,6 +16,7 @@ GAME_OBJECT_DEFS = {
         solid = false,
         collidable = true,
         consumable = false,
+        interactable = false,
         defaultState = 'unpressed',
         states = {
             ['unpressed'] = {
@@ -27,7 +28,21 @@ GAME_OBJECT_DEFS = {
         }
     },
     ['pot'] = {
-        -- TODO
+        type = 'pot',
+        texture = 'tiles',
+        frame = 111,
+        width= 16,
+        height = 16,
+        solid = true,
+        collidable = false,
+        consumable = false,
+        interactable = true,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = 111
+            }
+        }
     },
     ['heart'] = {
         type = 'heart',
@@ -38,9 +53,10 @@ GAME_OBJECT_DEFS = {
         solid = false,
         collidable = false,
         consumable = true,
-        defaultState = 'heart',
+        interactable = false,
+        defaultState = 'default',
         states = {
-            ['heart'] = {
+            ['default'] = {
                 frame = 5
             }
         },
