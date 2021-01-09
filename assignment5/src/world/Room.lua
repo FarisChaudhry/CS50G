@@ -40,6 +40,10 @@ function Room:init(player)
     -- used for drawing when this room is the next room, adjacent to the active
     self.adjacentOffsetX = 0
     self.adjacentOffsetY = 0
+
+    Event.on('entityDead', function (entity) 
+        self:spawnHeart(entity)
+    end)
 end
 
 --[[
@@ -158,6 +162,15 @@ function Room:update(dt)
         -- remove entity from the table if health is <= 0
         if entity.health <= 0 then
             entity.dead = true
+            
+            if not entity.deadEventCalled then
+                -- signal entity an entity died this update call
+                Event.dispatch('entityDead', entity)
+                entity.deadEventCalled = true
+            else
+                goto entityDead
+            end    
+            
         elseif not entity.dead then
             entity:processAI({room = self}, dt)
             entity:update(dt)
@@ -173,6 +186,8 @@ function Room:update(dt)
                 gStateMachine:change('game-over')
             end
         end
+
+        ::entityDead::
     end
 
     for k, object in pairs(self.objects) do
@@ -180,7 +195,14 @@ function Room:update(dt)
 
         -- trigger collision callback on object
         if self.player:collides(object) then
-            object:onCollide()
+            if object.collidable
+             then
+                object:onCollide()
+            end
+            if object.consumable then
+                object:onConsume()
+                table.remove(self.objects, k)
+            end
         end
     end
 end
@@ -235,4 +257,21 @@ function Room:render()
     end
 
     love.graphics.setStencilTest()
+end
+
+function Room:spawnHeart(entity)
+    local HEART_CHANCE = 5
+    if math.random(HEART_CHANCE) == HEART_CHANCE and self.player.health < 6 then
+        local heart = GameObject(
+        GAME_OBJECT_DEFS['heart'], entity.x,
+        entity.y
+        )
+
+        heart.onConsume = function() 
+            self.player:damage(-2)
+            self.player.health = math.min(6, self.player.health)
+        end
+
+        table.insert(self.objects,heart)
+    end
 end

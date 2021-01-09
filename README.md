@@ -5,26 +5,26 @@
 
 - Assignment 0 - Pong
   - [Video](https://youtu.be/Pl4XFRx5gYs)
-  - [Spec](https://docs.cs50.net/games/2020/x/assignments/0/assignment0.html)
+  - [Spec](https://cs50.harvard.edu/games/2018/projects/0/pong/)
 
 - Assignment 1 - Flappy Bird
   - [Video](https://youtu.be/WxNL9tlGBVQ)
-  - [Spec](https://docs.cs50.net/games/2020/x/assignments/1/assignment1.html)
+  - [Spec](https://cs50.harvard.edu/games/2018/projects/1/flappy/)
 
 - Assignment 2 - Breakout
   - [Video](https://youtu.be/ZYPjQrHvKHY)
-  - [Spec](https://docs.cs50.net/games/2020/x/assignments/2/assignment2.html)
+  - [Spec](https://cs50.harvard.edu/games/2018/projects/2/breakout/)
 
 - Assignment 3 - Match 3
   - [Video](https://youtu.be/iUD5B81MzdA)
-  - [Spec](https://docs.cs50.net/games/2020/x/assignments/3/assignment3.html)
+  - [Spec](https://cs50.harvard.edu/games/2018/projects/3/match/)
 
 - Assignment 4 - Mario
   - [Video](https://youtu.be/DGqqJ3HbTHc)
-  - [Spec](https://docs.cs50.net/games/2020/x/assignments/4/assignment4.html)
+  - [Spec](https://cs50.harvard.edu/games/2018/projects/4/mario/)
 
 - Assignment 5 - Legend of Zelda
   - [Video] WIP
-  - [Spec] To add later
+  - [Spec](https://cs50.harvard.edu/games/2018/projects/5/zelda/)
 
 ## TODO
