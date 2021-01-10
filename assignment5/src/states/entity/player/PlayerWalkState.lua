@@ -38,6 +38,16 @@ function PlayerWalkState:update(dt)
         self.entity:changeState('swing-sword')
     end
 
+    if love.keyboard.wasPressed('e') then
+        for k, object in pairs(self.dungeon.currentRoom.objects) do
+            if object.interactable then
+                if object:inReach(self.entity) then
+                    object:onInteract(self.entity)
+                end
+            end
+        end
+    end
+
     -- perform base collision detection against walls
     EntityWalkState.update(self, dt)
 
