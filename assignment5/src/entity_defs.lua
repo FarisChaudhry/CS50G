@@ -70,11 +70,49 @@ ENTITY_DEFS = {
                 looping = false,
                 texture = 'character-swing-sword'
             },
-            ['pot-lift'] = {
-
+            ['pot-lift-left'] = {
+                frames = {10, 11, 12},
+                interval = 0.10,
+                looping = false,
+                texture = 'character-pot-lift'
             },
-            ['pot-walk'] = {
-
+            ['pot-lift-right'] = {
+                frames = {4, 5, 6},
+                interval = 0.10,
+                looping = false,
+                texture = 'character-pot-lift'  
+            },
+            ['pot-lift-down'] = {
+                frames = {1, 2, 3},
+                interval = 0.10,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['pot-lift-up'] = {
+                frames = {7, 8, 9},
+                interval = 0.10,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['pot-walk-left'] = {
+                frames = {13, 14, 15, 16},
+                interval = 0.15,
+                texture = 'character-pot-walk'
+            },
+            ['pot-walk-right'] = {
+                frames = {5, 6, 7, 8},
+                interval = 0.15,
+                texture = 'character-pot-walk'
+            },
+            ['pot-walk-down'] = {
+                frames = {1, 2, 3, 4},
+                interval = 0.15,
+                texture = 'character-pot-walk'
+            },
+            ['pot-walk-up'] = {
+                frames = {9, 10, 11, 12},
+                interval = 0.15,
+                texture = 'character-pot-walk'
             }
         }
     },
