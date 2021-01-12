@@ -10,6 +10,7 @@ PlayerSwingSwordState = Class{__includes = BaseState}
 
 function PlayerSwingSwordState:init(player, dungeon)
     self.player = player
+    
     self.dungeon = dungeon
 
     -- render offset for spaced character sprite
