@@ -59,6 +59,14 @@ function EntityWalkState:update(dt)
             self.bumped = true
         end
     end
+
+    for k, object in pairs(self.dungeon.currentRoom.objects) do
+        if object.solid then
+            if self.entity:collides(object) then
+                self.bumped = true
+            end
+        end
+    end
 end
 
 function EntityWalkState:processAI(params, dt)

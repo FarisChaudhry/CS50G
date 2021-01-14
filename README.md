@@ -26,5 +26,3 @@
 - Assignment 5 - Legend of Zelda
   - [Video] WIP
   - [Spec](https://cs50.harvard.edu/games/2018/projects/5/zelda/)
-
-## TODO
