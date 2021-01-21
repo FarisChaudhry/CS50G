@@ -27,11 +27,11 @@ function PlayState:init()
     }
 
     self.dungeon = Dungeon(self.player)
-    self.currentRoom = Room(self.player)
+    self.currentRoom = self.dungeon.currentRoom
     
     self.player.stateMachine = StateMachine {
-        ['walk'] = function() return PlayerWalkState(self.player, self.dungeon) end,
-        ['idle'] = function() return PlayerIdleState(self.player, self.dungeon) end,
+        ['walk'] = function() return PlayerWalkState(self.player, self.currentRoom) end,
+        ['idle'] = function() return PlayerIdleState(self.player, self.currentRoom) end,
         ['swing-sword'] = function() return PlayerSwingSwordState(self.player, self.dungeon) end
     }
     self.player:changeState('idle')
@@ -46,6 +46,7 @@ function PlayState:update(dt)
     end
 
     self.dungeon:update(dt)
+    self.currentRoom = self.dungeon.currentRoom
 end
 
 function PlayState:render()

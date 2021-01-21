@@ -29,7 +29,7 @@ function PlayerIdleState:update(dt)
     end
 
     if love.keyboard.wasPressed('e') then
-        for k, object in pairs(self.dungeon.currentRoom.objects) do
+        for k, object in pairs(self.room.objects) do
             if object.interactable then
                 if object:inReach(self.entity) then
                     object:onInteract(self.entity)
