@@ -73,7 +73,7 @@ function Room:generateEntities()
 			walkSpeed = ENTITY_DEFS[type].walkSpeed or 20,
 			hitbox = ENTITY_DEFS[type].hitbox,
 			hurtbox = ENTITY_DEFS[type].hurtbox,
-			flier = ENTITY_DEFS[type].flier,
+			canFly = ENTITY_DEFS[type].canFly,
 			room = self,
 
 			-- ensure X and Y are within bounds of the map
@@ -85,8 +85,8 @@ function Room:generateEntities()
 
 			health = 1,
 			onDeath = function(entity)
-				if math.random(4) == 4 then
-					Timer.after(KNOCKBACK_SPEED + 0.8, function()
+				if math.random(HEART_SPAWN_CHANCE) == 4 then
+					Timer.after(0.25, function()
 						table.insert(self.objects,
 							GameObject(GAME_OBJECT_DEFS['heart'], entity.x, entity.y))
 					end)
@@ -236,7 +236,7 @@ function Room:update(dt)
 				projectile.x >= MAP_RIGHT_EDGE or
 				projectile.y <= MAP_TOP_EDGE - 2 - projectile.height or
 				projectile.y  >= MAP_BOTTOM_EDGE then
-						projectile:explode()
+					projectile:explode()
 			end
 
 			

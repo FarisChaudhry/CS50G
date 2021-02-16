@@ -260,7 +260,7 @@ ENTITY_DEFS = {
 	},
 	['bat'] = {
 		texture = 'entities',
-		flier = true,
+		canFly = true,
 		hitbox = {
 			padX = 5,
 			padY = 4,
@@ -310,7 +310,7 @@ ENTITY_DEFS = {
 	},
 	['ghost'] = {
 		texture = 'entities',
-		flier = true,
+		canFly = true,
 		hitbox = {
 			padX = 2,
 			padY = 1,

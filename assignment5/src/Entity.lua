@@ -31,7 +31,7 @@ function Entity:init(def)
 
 	self.health = def.health
 
-	self.flier = def.flier or false
+	self.canFly = def.canFly or false
 
 	self.hitbox = Hitbox {
 		padX = def.hitbox.padX,
@@ -206,7 +206,7 @@ function Entity:update(dt)
 end
 
 function Entity:checkObjectCollisions(dt)
-	if not self.flier then
+	if not self.canFly then
 		for k, object in pairs(self.room.objects) do
 			if object.solid then
 				if self:collides(object) then
@@ -273,7 +273,7 @@ end
 function Entity:render(adjacentOffsetX, adjacentOffsetY)
 	if not self.dead then
 		if gRenderHitboxes then
-			if self.flier == true then
+			if self.canFly == true then
 				self.hurtbox:render(0, 0, 255)
 			else
 				self.hurtbox:render(0, 255, 0)
