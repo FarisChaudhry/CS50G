@@ -1,119 +1,126 @@
 --[[
-    GD50
-    Legend of Zelda
+	GD50
+	Legend of Zelda
 
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
+	Author: Colton Ogden
+	cogden@cs50.harvard.edu
 ]]
 
 PlayerWalkState = Class{__includes = EntityWalkState}
 
-function PlayerWalkState:enter(params)
-    -- render offset for spaced character sprite
-    self.entity.offsetY = 5
-    self.entity.offsetX = 0
+function PlayerWalkState:init(player, dungeon)
+	self.entity = player
+	self.dungeon = dungeon
+	self.entity.room = dungeon.currentRoom
+
+	-- render offset for spaced character sprite
+	self.entity.offsetY = 5
+	self.entity.offsetX = 0
+
+	self.entity.idle = false
+	self.entity.directionHit = 'none'
 end
 
 function PlayerWalkState:update(dt)
-    if love.keyboard.isDown('left') then
-        self.entity.direction = 'left'
-        self.entity:changeAnimation('walk-left')
-    elseif love.keyboard.isDown('right') then
-        self.entity.direction = 'right'
-        self.entity:changeAnimation('walk-right')
-    elseif love.keyboard.isDown('up') then
-        self.entity.direction = 'up'
-        self.entity:changeAnimation('walk-up')
-    elseif love.keyboard.isDown('down') then
-        self.entity.direction = 'down'
-        self.entity:changeAnimation('walk-down')
-    else
-        self.entity:changeState('idle')
-    end
+	if love.keyboard.isDown(PLAYER_LEFT) then
+		self.entity.direction = 'left'
+	elseif love.keyboard.isDown(PLAYER_RIGHT) then
+		self.entity.direction = 'right'
+	elseif love.keyboard.isDown(PLAYER_UP) then
+		self.entity.direction = 'up'
+	elseif love.keyboard.isDown(PLAYER_DOWN) then
+		self.entity.direction = 'down'
+	else
+		self.entity:changeState('idle')
+	end
 
-    if love.keyboard.wasPressed('space') then
-        self.entity:changeState('swing-sword')
-    end
+	-- perform base collision detection against walls
 
-    if love.keyboard.wasPressed('e') then
-        for k, object in pairs(self.room.objects) do
-            if object.interactable then
-                if object:inReach(self.entity) then
-                    object:onInteract(self.entity)
-                end
-            end
-        end
-    end
+	EntityWalkState.update(self, dt)
 
-    -- perform base collision detection against walls
-    EntityWalkState.update(self, dt)
+	-- if we bumped something when checking collision, check any object collisions
+	if self.entity.bumped then
+		if self.entity.direction == 'left' then
 
-    -- if we bumped something when checking collision, check any object collisions
-    if self.bumped then
-        if self.entity.direction == 'left' then
-            
-            -- temporarily adjust position
-            self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
-            
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
+			-- temporarily adjust position
+			self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
 
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.y = doorway.y + 4
-                    Event.dispatch('shift-left')
-                end
-            end
+			for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+				if self.entity:collides(doorway) and doorway.open then
 
-            -- readjust
-            self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
-        elseif self.entity.direction == 'right' then
-            
-            -- temporarily adjust position
-            self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
-            
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
+					-- shift entity to center of door to avoid phasing through wall
+					self.entity.y = doorway.y + 4
+					Event.dispatch('shift-left')
+				end
+			end
 
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.y = doorway.y + 4
-                    Event.dispatch('shift-right')
-                end
-            end
+			-- readjust
+			self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
+		elseif self.entity.direction == 'right' then
 
-            -- readjust
-            self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
-        elseif self.entity.direction == 'up' then
-            
-            -- temporarily adjust position
-            self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
-            
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
+			-- temporarily adjust position
+			self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
 
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.x = doorway.x + 8
-                    Event.dispatch('shift-up')
-                end
-            end
+			for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+				if self.entity:collides(doorway) and doorway.open then
 
-            -- readjust
-            self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
-        else
-            
-            -- temporarily adjust position
-            self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
-            
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
+					-- shift entity to center of door to avoid phasing through wall
+					self.entity.y = doorway.y + 4
+					Event.dispatch('shift-right')
+				end
+			end
 
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.x = doorway.x + 8
-                    Event.dispatch('shift-down')
-                end
-            end
+			-- readjust
+			self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
+		elseif self.entity.direction == 'up' then
 
-            -- readjust
-            self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
-        end
-    end
+			-- temporarily adjust position
+			self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
+
+			for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+				if self.entity:collides(doorway) and doorway.open then
+
+					-- shift entity to center of door to avoid phasing through wall
+					self.entity.x = doorway.x + 8
+					Event.dispatch('shift-up')
+				end
+			end
+
+			-- readjust
+			self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
+		else
+
+			-- temporarily adjust position
+			self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
+
+			for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+				if self.entity:collides(doorway) and doorway.open then
+
+					-- shift entity to center of door to avoid phasing through wall
+					self.entity.x = doorway.x + 8
+					Event.dispatch('shift-down')
+				end
+			end
+
+			-- readjust
+			self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
+		end
+	end
+end
+
+function PlayerWalkState:action(dt)
+	-- If no item, will attempt lift
+	if self.entity.item == nil then
+		self.entity:attemptLift(dt)
+		-- If no item after attempting lift, swing sword
+		if self.entity.item == nil then
+			self.entity:changeState('swing-sword')
+		-- If item after attempting lift, lift state
+		else
+			self.entity:changeState('lift')
+		end
+	-- If has item, will throw
+	else
+		self.entity:changeState('throw')
+	end
 end

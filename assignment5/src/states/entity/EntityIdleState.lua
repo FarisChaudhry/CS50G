@@ -1,42 +1,52 @@
 --[[
-    GD50
-    Legend of Zelda
+	GD50
+	Legend of Zelda
 
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
+	Author: Colton Ogden
+	cogden@cs50.harvard.edu
 ]]
 
 EntityIdleState = Class{__includes = BaseState}
 
-function EntityIdleState:init(entity, room)
-    self.entity = entity
-    self.entity:changeAnimation('idle-' .. self.entity.direction)
+function EntityIdleState:init(entity)
+	self.entity = entity
 
-    self.room = room
+	if self.entity.item == nil then
+		self.entity:changeAnimation('idle-' .. self.entity.direction)
+	else
+		self.entity:changeAnimation('hold-' .. self.entity.direction)
+	end
 
-    -- used for AI waiting
-    self.waitDuration = 0
-    self.waitTimer = 0
+	-- used for AI waiting
+	self.waitDuration = 0
+	self.waitTimer = 0
 end
 
-function EntityIdleState:processAI(params, dt)
-    if self.waitDuration == 0 then
-        self.waitDuration = math.random(5)
-    else
-        self.waitTimer = self.waitTimer + dt
+function EntityIdleState:processAI(dt)
+	if self.waitDuration == 0 then
+		self.waitDuration = math.random()
+	else
+		self.waitTimer = self.waitTimer + dt
 
-        if self.waitTimer > self.waitDuration then
-            self.entity:changeState('walk')
-        end
-    end
+		if self.waitTimer > self.waitDuration then
+			self.entity:changeState('walk')
+		end
+	end
 end
 
 function EntityIdleState:render()
-    local anim = self.entity.currentAnimation
-    love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
-        math.floor(self.entity.x - self.entity.offsetX), math.floor(self.entity.y - self.entity.offsetY))
-    
-    -- love.graphics.setColor(255, 0, 255, 255)
-    -- love.graphics.rectangle('line', self.entity.x, self.entity.y, self.entity.width, self.entity.height)
-    -- love.graphics.setColor(255, 255, 255, 255)
+	if self.entity.item == nil then
+		self.entity:changeAnimation('idle-' .. self.entity.direction)
+	else
+		self.entity:changeAnimation('hold-' .. self.entity.direction)
+	end
+	local anim = self.entity.currentAnimation
+	love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
+		math.floor(self.entity.x - self.entity.offsetX), math.floor(self.entity.y - self.entity.offsetY))
+
+	if self.entity.item ~= nil then
+		self.entity.item.x = self.entity.x
+		self.entity.item.y = self.entity.y - self.entity.item.height/2
+		self.entity.item:render(0, 0)
+	end
 end
