@@ -48,7 +48,8 @@ gTextures = {
 	['hearts'] = love.graphics.newImage('graphics/hearts.png'),
 	['switches'] = love.graphics.newImage('graphics/switches.png'),
 	['entities'] = love.graphics.newImage('graphics/entities.png'),
-	['particle'] = love.graphics.newImage('graphics/particle.png')
+	['particle'] = love.graphics.newImage('graphics/particle.png'),
+	['icon'] = love.graphics.newImage('graphics/zelda_icon.png')
 }
 
 gFrames = {

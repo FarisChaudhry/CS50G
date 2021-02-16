@@ -14,7 +14,7 @@ function love.load()
 	love.graphics.setDefaultFilter('nearest', 'nearest')
 
 	push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
-		fullscreen = false,
+		fullscreen = true,
 		vsync = false,
 		resizable = true
 	})
@@ -40,6 +40,10 @@ end
 
 function love.keypressed(key)
 	love.keyboard.keysPressed[key] = true
+
+	if key == 'q' then
+		love.event.quit()
+	end
 end
 
 function love.keyboard.wasPressed(key)
