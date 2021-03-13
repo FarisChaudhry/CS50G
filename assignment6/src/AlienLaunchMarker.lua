@@ -87,7 +87,7 @@ function AlienLaunchMarker:render()
             -- http://www.iforce2d.net/b2dtut/projected-trajectory
             for i = 1, 90 do
                 
-                -- black color that starts off slightly transparent
+                 -- black color that starts off slightly transparent
                 love.graphics.setColor(1, 1, 1, ((255 / 24) * i))
                 
                 -- trajectory X and Y for this iteration of the simulation
