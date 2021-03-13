@@ -68,7 +68,7 @@ function love.mousepressed(x, y, key)
 end
 
 function love.mousereleased(x, y, key)
-    love.mouse.keysReleased[key] = true 
+    love.mouse.keysReleased[key] = true
 end
 
 function love.keyboard.wasPressed(key)

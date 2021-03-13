@@ -7,7 +7,7 @@
 ]]
 
 BACKGROUND_TYPES = {
-    'colored-land', 'blue-desert', 'blue-grass', 'blue-land', 
+    'colored-land', 'blue-desert', 'blue-grass', 'blue-land',
     'blue-shroom', 'colored-desert', 'colored-grass', 'colored-shroom'
 }
 
