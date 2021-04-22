@@ -38,3 +38,9 @@ function Alien:render()
         math.floor(self.body:getX()), math.floor(self.body:getY()), self.body:getAngle(),
         1, 1, 17.5, 17.5)
 end
+
+function Alien:split()
+    if not self.hasHitObstacle then
+        -- TODO add method to split alien
+    end
+end
